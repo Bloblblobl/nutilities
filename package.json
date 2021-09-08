@@ -1,0 +1,23 @@
+{
+  "name": "nutilities",
+  "version": "1.0.0",
+  "description": "A browser extension with utilities for the new tab page",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bloblblobl/nutilities.git"
+  },
+  "author": "Bloblblobl",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bloblblobl/nutilities/issues"
+  },
+  "homepage": "https://github.com/Bloblblobl/nutilities#readme",
+  "devDependencies": {
+    "webpack": "^5.52.0",
+    "webpack-cli": "^4.8.0"
+  }
+}
