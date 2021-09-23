@@ -1,13 +1,27 @@
 <script>
+    import Grid from './Grid.svelte';
+    import TopBar from './TopBar.svelte';
     export let name;
 </script>
 
+<TopBar {name}/>
 <main>
-    <h1>Hello, {name}!</h1>
+    <Grid rows={5} columns={10}/>
 </main>
 
 <style>
-    :global(body, html) {
+    @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+    :root {
+        --topbar-height: 4rem;
+
+        --c-light-gray: #b5bec6;
+        --c-dark-gray: #2b2d42;
+        --c-yellow: #f4e04d;
+        --c-mint: #8be8cb;
+    }
+
+    :global(html, body) {
         width: 100%;
         height: 100%;
 
@@ -15,15 +29,11 @@
     }
 
     main {
-        width: 100%;
-        height: 100%;
-
-        background-color: aqua;
-    }
-
-    h1 {
-        margin: 0;
-        
-        color: blue;
+        padding: 1rem;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - var(--topbar-height));
+        background-color: var(--c-dark-gray);
     }
 </style>
