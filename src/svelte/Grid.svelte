@@ -1,6 +1,7 @@
-<script>
-    export let rows = 3;
-    export let columns = 3;
+<script lang="ts">
+    export let rows: number = 3;
+    export let columns: number = 3;
+
 </script>
 
 {#each [...Array(rows).keys()] as i}

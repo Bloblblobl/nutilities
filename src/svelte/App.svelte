@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
     import Grid from './Grid.svelte';
     import TopBar from './TopBar.svelte';
-    export let name;
+    export let name: string;
 </script>
 
 <TopBar {name}/>

@@ -3,9 +3,11 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const SveltePreprocess = require("svelte-preprocess");
+
 module.exports = {
     mode: 'development',
-    entry: path.resolve(__dirname, 'src', 'js', 'index.js'),
+    entry: path.resolve(__dirname, 'src', 'ts', 'index.ts'),
     output: {
         filename: 'index.js',
         path: path.resolve(__dirname, 'dist'),
@@ -14,7 +16,7 @@ module.exports = {
         alias: {
             svelte: path.resolve(__dirname, 'node_modules', 'svelte'),
         },
-        extensions: ['.mjs', '.js', '.svelte'],
+        extensions: ['.tsx', '.ts', '.mjs', '.js', '.svelte'],
         mainFields: ['svelte', 'browser', 'module', 'main'],
     },
     plugins: [
@@ -32,31 +34,6 @@ module.exports = {
                 use: 'html-loader',
             },
             {
-                test: /\.(svg|png|jpg|gif)$/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[ext]',
-                        outputPath: 'img',
-                    },
-                },
-            },
-            {
-                test: /\.svelte$/,
-                use: {
-                    loader: 'svelte-loader',
-                    options: {
-                        emitCss: true,
-                    },
-                },
-            },
-            {
-                test: /node_modules\/svelte\/.*\.mjs$/,
-                resolve: {
-                    fullySpecified: false,
-                },
-            },
-            {
                 test: /\.css$/,
                 use: [
                     MiniCssExtractPlugin.loader,
@@ -67,6 +44,42 @@ module.exports = {
                         },
                     }
                 ],
+            },
+            {
+                test: /\.(svg|png|jpg|gif)$/,
+                use: {
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[ext]',
+                        outputPath: 'img',
+                    },
+                },
+            },
+            {
+                test: /\.tsx?$/,
+                use: 'babel-loader',
+                exclude: /node_modules/,
+            },
+            {
+                test: /\.svelte$/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                    },
+                    {
+                        loader: 'svelte-loader',
+                        options: {
+                            emitCss: true,
+                            preprocess: SveltePreprocess({}),
+                        },
+                    },
+                ],
+            },
+            {
+                test: /node_modules\/svelte\/.*\.mjs$/,
+                resolve: {
+                    fullySpecified: false,
+                },
             },
         ],
     },

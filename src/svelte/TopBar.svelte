@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     import logo from '../img/logo/512x512.png';
-    export let name;
+    export let name: string;
 </script>
 
 <header>
