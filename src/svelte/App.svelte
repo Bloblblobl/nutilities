@@ -1,7 +1,15 @@
 <script lang="ts">
     import Grid from './Grid.svelte';
     import TopBar from './TopBar.svelte';
+
+    import { db } from '../ts/services/db';
+    import * as database from 'firebase/database';
+    
     export let name: string;
+
+    const dbRef: database.DatabaseReference = database.ref(db);
+    // database.onValue()
+    console.log(database.child(dbRef, 'dynamic-bookmarks'));
 </script>
 
 <TopBar {name}/>
