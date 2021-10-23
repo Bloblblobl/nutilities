@@ -1,17 +1,16 @@
 <script lang="ts">
+    import logo512 from '../img/logo/512x512.png';
+
     export let rows: number = 3;
     export let columns: number = 3;
-
 </script>
 
 {#each [...Array(rows).keys()] as i}
     <section>
         {#each [...Array(columns).keys()] as j}
-            {#if i === j }
-                <article></article>
-            {:else}
-                <article></article>
-            {/if}
+            <article>
+                <img src="{logo512}" alt="{i}, {j}">
+            </article>
         {/each}
     </section>
 {/each}
@@ -26,6 +25,7 @@
     }
 
     article {
+        display: flex;
         border-radius: 0.5rem;
         cursor: pointer;
         background-color: var(--c-light-gray);
@@ -42,8 +42,12 @@
     }
 
     article:hover {
-        background-color: var(--c-mint);
-        opacity: 0.5;
+        opacity: 1;
         transition: 0.5s;
+    }
+
+    article img {
+        max-height: 5rem;
+        margin: auto;
     }
 </style>

@@ -1,12 +1,12 @@
 <script lang="ts">
     import SpotifyLogin from './SpotifyLogin.svelte';
-    import logo from '../img/logo/512x512.png';
+    import logo512 from '../img/logo/512x512.png';
 
     export let name: string;
 </script>
 
 <header>
-    <img src="{logo}" alt="Nutilities Logo">
+    <img src="{logo512}" alt="Nutilities Logo">
     <h1>Hello, {name}!</h1>
     <SpotifyLogin/>
 </header>

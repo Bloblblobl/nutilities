@@ -2,7 +2,7 @@
     import Grid from './Grid.svelte';
     import TopBar from './TopBar.svelte';
 
-    import { db } from '../ts/services/db';
+    import { db } from '../ts/clients/db';
     import * as database from 'firebase/database';
     
     export let name: string;
