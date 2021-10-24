@@ -1,4 +1,9 @@
+declare module '*.svelte' {
+    const value: any;
+    export default value;
+}
+
 declare module '*.png' {
     const value: string;
-    export = value;
+    export default value;
 }

@@ -10,7 +10,6 @@ function redirectToAuthorize() {
     let authURL: URL = new URL('https://accounts.spotify.com/authorize');
     authURL.search = new URLSearchParams(queryParameters).toString();
     window.location.href = authURL.toString();
-
 }
 
 export {
