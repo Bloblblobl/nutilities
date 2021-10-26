@@ -3,13 +3,14 @@
     import TopBar from './TopBar.svelte';
 
     import { db } from '../ts/clients/db';
+    import { helloWorld } from '../ts/clients/functions';
     import * as database from 'firebase/database';
     
     export let name: string;
 
     const dbRef: database.DatabaseReference = database.ref(db);
-    // database.onValue()
     console.log(database.child(dbRef, 'dynamic-bookmarks'));
+    helloWorld().then(result => console.log(result)).catch(error => console.log(error));
 </script>
 
 <TopBar {name}/>
