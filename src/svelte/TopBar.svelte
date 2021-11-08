@@ -6,15 +6,20 @@
 </script>
 
 <header>
-    <img src="{logo512}" alt="Nutilities Logo">
-    <h1>Hello, {name}!</h1>
-    <SpotifyLogin/>
+    <div id="left-group" class="header-group">
+        <img src="{logo512}" alt="Nutilities Logo">
+        <h1>Hello, <a href="{window.location.origin + window.location.pathname}">{name}</a>!</h1>
+    </div>
+    <div id="right-group" class="header-group">
+        <SpotifyLogin/>
+    </div>
 </header>
 
 <style>
     header {
         box-sizing: border-box;
         display: flex;
+        justify-content: space-between;
         align-items: center;
 
         width: 100%;
@@ -22,6 +27,11 @@
 
         background-color: var(--c-dark-gray);
         border-bottom: solid 1px var(--c-light-gray);
+    }
+
+    .header-group {
+        display: flex;
+        align-items: center;
     }
 
     img {
@@ -47,5 +57,13 @@
         margin: 0 0 0 0.5rem;
         color: var(--c-light-gray);
         font-family: 'Lobster', cursive;
+    }
+
+    h1 a {
+        color: inherit;
+    }
+
+    h1 a:not(:hover) {
+        text-decoration: none;
     }
 </style>

@@ -3,14 +3,12 @@
     import TopBar from './TopBar.svelte';
 
     import { db } from '../ts/clients/db';
-    import { helloWorld } from '../ts/clients/functions';
     import * as database from 'firebase/database';
     
     export let name: string;
 
-    const dbRef: database.DatabaseReference = database.ref(db);
+    const dbRef: database.DatabaseReference = database.ref(db.realtime);
     console.log(database.child(dbRef, 'dynamic-bookmarks'));
-    helloWorld().then(result => console.log(result)).catch(error => console.log(error));
 </script>
 
 <TopBar {name}/>
@@ -20,6 +18,7 @@
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
 
     :root {
         --topbar-height: 4rem;
@@ -28,6 +27,10 @@
         --c-dark-gray: #2b2d42;
         --c-yellow: #f4e04d;
         --c-mint: #8be8cb;
+
+        --c-spotify-green: #1db954;
+        --c-spotify-light-green: #1ed761;
+        --c-spotify-black: #191414;
     }
 
     :global(html, body) {
