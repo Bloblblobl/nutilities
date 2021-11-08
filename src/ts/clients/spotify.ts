@@ -1,11 +1,16 @@
-import { spotifyAuthorize } from './functions';
+import { spotifyAuthorize, spotifyRequestAccessToken } from './functions';
 
 function redirectToAuthorize() {
-    spotifyAuthorize().then((result) => {
-        window.location.href = result.data.redirectURL;
-    });
+    const baseRedirectURL: string = window.location.origin + window.location.pathname;
+    return spotifyAuthorize({ baseRedirectURL });
+}
+
+function requestAccessToken(code: string) {
+    const baseRedirectURL: string = window.location.origin + window.location.pathname;
+    return spotifyRequestAccessToken({ baseRedirectURL, code });
 }
 
 export {
     redirectToAuthorize,
+    requestAccessToken,
 };

@@ -1,7 +1,13 @@
 import { app } from './firebase';
 import { Database, getDatabase, set, ref } from 'firebase/database';
 
-export const db: Database = getDatabase(app);
+const local: Storage = window.localStorage;
+const realtime: Database = getDatabase(app);
+
+export const db = {
+    local,
+    realtime,
+}
 
 // export const db = {
 //     write: (path: string, value: any) => {
