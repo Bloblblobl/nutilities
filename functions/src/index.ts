@@ -1,25 +1,41 @@
 import * as functions from 'firebase-functions';
+import { request } from 'gaxios';
 
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
-
-export const helloWorld = functions.https.onCall((data, context) => {
-  functions.logger.info('Hello logs!', {structuredData: true});
-  return {
-    text: 'Hello from Firebase!',
-  };
-});
+// https://developer.spotify.com/documentation/general/guides/authorization/code-flow/
+const spotifyClientID = functions.config().spotify.clientid;
+const spotifyClientSecret = functions.config().spotify.clientsecret;
 
 export const spotifyAuthorize = functions.https.onCall((data, context) => {
-  const queryParameters = {
-    client_id: functions.config().spotify.clientid,
-    response_type: 'code',
-    redirect_uri: data?.baseRedirectURL ?? 'http://localhost:8080/',
-  };
+    const queryParameters = {
+        client_id: spotifyClientID,
+        response_type: 'code',
+        redirect_uri: data?.baseRedirectURL ?? 'http://localhost:8080/',
+    };
 
-  const authURL: URL = new URL('https://accounts.spotify.com/authorize');
-  authURL.search = new URLSearchParams(queryParameters).toString();
-  return {
-    redirectURL: authURL.toString(),
-  };
+    const authURL: URL = new URL('https://accounts.spotify.com/authorize');
+    authURL.search = new URLSearchParams(queryParameters).toString();
+    return {
+        redirectURL: authURL.toString(),
+    };
+});
+
+export const spotifyRequestAccessToken = functions.https.onCall((data, context) => {
+    const queryParameters = {
+        grant_type: 'authorization_code',
+        code: data.code,
+        redirect_uri: data?.baseRedirectURL ?? 'http://localhost:8080/',
+    };
+
+    const tokenURL: URL = new URL('https://accounts.spotify.com/api/token');
+    tokenURL.search = new URLSearchParams(queryParameters).toString();
+    const spotifyIDSecret = spotifyClientID + ':' + spotifyClientSecret;
+    const authorizationHeader = 'Basic ' + Buffer.from(spotifyIDSecret).toString('base64');
+    return request({
+        url: tokenURL.toString(),
+        method: 'POST',
+        headers: {
+            'Authorization': authorizationHeader,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    }).then((response) => response.data);
 });
