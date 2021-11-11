@@ -10,6 +10,7 @@ export const spotifyAuthorize = functions.https.onCall((data, context) => {
         client_id: spotifyClientID,
         response_type: 'code',
         redirect_uri: data?.baseRedirectURL ?? 'http://localhost:8080/',
+        scope: data?.scopes ?? '',
     };
 
     const authURL: URL = new URL('https://accounts.spotify.com/authorize');
