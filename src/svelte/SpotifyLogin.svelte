@@ -1,48 +1,49 @@
 <script lang="ts">
-import { db } from '../ts/clients/db';
-import * as spotify from '../ts/clients/spotify';
-const urlSearchParams = new URLSearchParams(window.location.search);
-const queryParameters = Object.fromEntries(urlSearchParams.entries());
+    import { db } from '../ts/clients/db';
+    import * as spotify from '../ts/clients/spotify';
+    import { recentlyPlayed } from '../ts/stores';
 
-const logIn = () => {
-    spotify.redirectToAuthorize().then((result) => {
-        window.location.href = result.data.redirectURL;
-    });
-}
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const queryParameters = Object.fromEntries(urlSearchParams.entries());
 
-const clearLocalStorage = () => {
-    db.local.removeItem('SpotifyAccessToken');
-    db.local.removeItem('SpotifyRefreshToken');
-    window.location.reload();
-}
-
-if ('code' in queryParameters) {
-    spotify.requestAccessToken(queryParameters.code).then(() => {
-        delete queryParameters.code;
-        window.location.search = new URLSearchParams(queryParameters).toString();
-    });
-}
-
-const accessToken = db.local.getItem('SpotifyAccessToken');
-
-async function getUser() {
-    const user = db.local.getItem('SpotifyUser');
-    if (user !== null) {
-        return JSON.parse(user);
+    const logIn = () => {
+        spotify.redirectToAuthorize().then((result) => {
+            window.location.href = result.data.redirectURL;
+        });
     }
 
-    const response = await spotify.makeRequest('me', 'GET');
-    db.local.setItem('SpotifyUser', JSON.stringify(response));
-    return response;
-}
+    const clearLocalStorage = () => {
+        db.local.removeItem('SpotifyAccessToken');
+        db.local.removeItem('SpotifyRefreshToken');
+        window.location.reload();
+    }
 
-async function getRecentlyPlayedTracks() {
-    const response = await spotify.makeRequest('me/player/recently-played', 'GET');
-    console.log(response);
-}
+    if ('code' in queryParameters) {
+        spotify.requestAccessToken(queryParameters.code).then(() => {
+            delete queryParameters.code;
+            window.location.search = new URLSearchParams(queryParameters).toString();
+        });
+    }
 
-getRecentlyPlayedTracks();
+    const accessToken = db.local.getItem('SpotifyAccessToken');
 
+    async function getUser() {
+        const user = db.local.getItem('SpotifyUser');
+        if (user !== null) {
+            return JSON.parse(user);
+        }
+
+        const response = await spotify.makeRequest('me', 'GET');
+        db.local.setItem('SpotifyUser', JSON.stringify(response));
+        return response;
+    }
+
+    async function getRecentlyPlayedTracks() {
+        const response = await spotify.makeRequest('me/player/recently-played', 'GET');
+        recentlyPlayed.set(response);
+    }
+
+    getRecentlyPlayedTracks();
 </script>
 
 {#if accessToken === null}

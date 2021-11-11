@@ -13,7 +13,7 @@
 
 <TopBar {name}/>
 <main>
-    <Grid rows={5} columns={10}/>
+    <Grid rows={4} columns={5}/>
 </main>
 
 <style>
