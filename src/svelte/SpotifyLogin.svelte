@@ -1,51 +1,69 @@
 <script lang="ts">
 import { db } from '../ts/clients/db';
+import * as spotify from '../ts/clients/spotify';
+const urlSearchParams = new URLSearchParams(window.location.search);
+const queryParameters = Object.fromEntries(urlSearchParams.entries());
 
-    import * as spotify from '../ts/clients/spotify';
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const queryParameters = Object.fromEntries(urlSearchParams.entries());
+const logIn = () => {
+    spotify.redirectToAuthorize().then((result) => {
+        window.location.href = result.data.redirectURL;
+    });
+}
 
-    const logIn = () => {
-        spotify.redirectToAuthorize().then((result) => {
-            window.location.href = result.data.redirectURL;
-        });
+const clearLocalStorage = () => {
+    db.local.removeItem('SpotifyAccessToken');
+    db.local.removeItem('SpotifyRefreshToken');
+    window.location.reload();
+}
+
+if ('code' in queryParameters) {
+    spotify.requestAccessToken(queryParameters.code).then(() => {
+        delete queryParameters.code;
+        window.location.search = new URLSearchParams(queryParameters).toString();
+    });
+}
+
+const accessToken = db.local.getItem('SpotifyAccessToken');
+
+async function getUser() {
+    const user = db.local.getItem('SpotifyUser');
+    if (user === null) {
+        console.log(JSON.parse(user));
+        return JSON.parse(user);
     }
 
-    const clearLocalStorage = () => {
-        db.local.removeItem('SpotifyAccessToken');
-        db.local.removeItem('SpotifyRefreshToken');
-        window.location.reload();
-    }
-
-    if ('code' in queryParameters) {
-        spotify.requestAccessToken(queryParameters.code).then((result) => {
-            db.local.setItem('SpotifyAccessToken', result.data.access_token);
-            db.local.setItem('SpotifyRefreshToken', result.data.refresh_token);
-            delete queryParameters.code;
-            console.log(new URLSearchParams(queryParameters).toString());
-            window.location.search = new URLSearchParams(queryParameters).toString();
-        });
-    }
-
-    const accessToken = db.local.getItem('SpotifyAccessToken');
+    const response = await spotify.makeRequest('me', 'GET');
+    db.local.setItem('SpotifyUser', JSON.stringify(response));
+    console.log(response);
+    return response;
+}
 
 </script>
 
 {#if accessToken === null}
 <button on:click={logIn}>Log In</button>
 {:else}
-<div>You're logged in ya idiot</div>
 <button on:click={clearLocalStorage}>Clear Storage</button>
+<div>
+    {#await getUser()}
+        <p>Logged In...</p>
+    {:then user}
+        <a href="{user.external_urls.spotify}">
+            <p>{user.display_name}</p>
+            <img src={user.images[0].url} alt="{user.display_name}'s Spotify Profile"/>
+        </a>
+    {/await}
+</div>
 {/if}
 
 <style>
     button {
         box-sizing: border-box;
 
-        margin: 1rem;
+        margin: 0 1rem;
         padding: 0.25rem;
 
-        background-color: var(--c-spotify-light-green);
+        background-color: var(--c-spotify-green);
         color: var(--c-spotify-black);
 
         font-size: 2rem;
@@ -59,15 +77,36 @@ import { db } from '../ts/clients/db';
     }   
 
     button:hover {
-        background-color: var(--c-spotify-green);
+        background-color: var(--c-spotify-light-green);
         color: white;
     }
 
     div {
-        padding-left: 100;
+        margin: 0 1rem;
         color: white;
         font-size: 1.25rem;
         font-family: 'Rubik', cursive;
         font-weight: 300;
+    }
+
+    a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: inherit;
+    }
+
+    a:hover {
+        color: var(--c-spotify-light-green);
+    }
+
+    a:not(:hover) {
+        text-decoration: none;
+    }
+
+    img {
+        margin: 0 0.5rem;
+        max-height: 3rem;
+        border-radius: 50%;
     }
 </style>
