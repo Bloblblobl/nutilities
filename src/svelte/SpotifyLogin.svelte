@@ -27,16 +27,21 @@ const accessToken = db.local.getItem('SpotifyAccessToken');
 
 async function getUser() {
     const user = db.local.getItem('SpotifyUser');
-    if (user === null) {
-        console.log(JSON.parse(user));
+    if (user !== null) {
         return JSON.parse(user);
     }
 
     const response = await spotify.makeRequest('me', 'GET');
     db.local.setItem('SpotifyUser', JSON.stringify(response));
-    console.log(response);
     return response;
 }
+
+async function getRecentlyPlayedTracks() {
+    const response = await spotify.makeRequest('me/player/recently-played', 'GET');
+    console.log(response);
+}
+
+getRecentlyPlayedTracks();
 
 </script>
 

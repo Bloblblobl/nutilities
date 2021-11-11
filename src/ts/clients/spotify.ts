@@ -3,9 +3,13 @@ import { spotifyAuthorize, spotifyRequestAccessToken } from './functions';
 
 const BASE_API_URL = 'https://api.spotify.com/v1/';
 
+const scopes = [
+    'user-read-recently-played',
+];
+
 async function redirectToAuthorize() {
     const baseRedirectURL: string = window.location.origin + window.location.pathname;
-    let response = await spotifyAuthorize({ baseRedirectURL });
+    let response = await spotifyAuthorize({ baseRedirectURL, scopes: scopes.join(' ') });
     return response;
 }
 
