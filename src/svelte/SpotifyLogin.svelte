@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Button from './Button.svelte';
     import { db } from '../ts/clients/db';
     import * as spotify from '../ts/clients/spotify';
     import { recentlyPlayed } from '../ts/stores';
@@ -47,9 +48,9 @@
 </script>
 
 {#if accessToken === null}
-<button on:click={logIn}>Log In</button>
+<span><Button onClick={logIn}>Log In</Button></span>
 {:else}
-<button on:click={clearLocalStorage}>Clear Storage</button>
+<span><Button onClick={clearLocalStorage}>Clear Storage</Button></span>
 <div>
     {#await getUser()}
         <p>Logged In...</p>
@@ -63,28 +64,8 @@
 {/if}
 
 <style>
-    button {
-        box-sizing: border-box;
-
-        margin: 0 1rem;
-        padding: 0.25rem;
-
-        background-color: var(--c-spotify-green);
-        color: var(--c-spotify-black);
-
-        font-size: 2rem;
-        font-family: 'Rubik', cursive;
-        font-weight: 300;
-
-        border: none;
-        border-radius: 0;
-
-        cursor: pointer;
-    }   
-
-    button:hover {
-        background-color: var(--c-spotify-light-green);
-        color: white;
+    span {
+        padding: 0 1rem;
     }
 
     div {
