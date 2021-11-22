@@ -1,19 +1,26 @@
 <script lang="ts">
     import Grid from './Grid.svelte';
+    import Route from './Route.svelte';
     import TopBar from './TopBar.svelte';
 
-    import { db } from '../ts/clients/db';
-    import * as database from 'firebase/database';
+    // import { db } from '../ts/clients/db';
+    // import * as database from 'firebase/database';
+    import '../global.css';
     
     export let name: string;
 
-    const dbRef: database.DatabaseReference = database.ref(db.realtime);
-    console.log(database.child(dbRef, 'dynamic-bookmarks'));
+    // const dbRef: database.DatabaseReference = database.ref(db.realtime);
+    // console.log(database.child(dbRef, 'dynamic-bookmarks'));
 </script>
 
 <TopBar {name}/>
 <main>
-    <Grid rows={4} columns={5}/>
+    <Route path="/">
+        <Grid rows={4} columns={5}/>
+    </Route>
+    <Route path="/other">
+        <h1>This is other.</h1>
+    </Route>
 </main>
 
 <style>

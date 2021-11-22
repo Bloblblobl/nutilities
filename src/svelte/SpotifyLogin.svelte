@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Button from './Button.svelte';
     import { db } from '../ts/clients/db';
     import * as spotify from '../ts/clients/spotify';
     import { recentlyPlayed } from '../ts/stores';
@@ -48,9 +47,9 @@
 </script>
 
 {#if accessToken === null}
-<span><Button onClick={logIn}>Log In</Button></span>
+<span><button class="main-button" on:click={logIn}>Log In</button></span>
 {:else}
-<span><Button onClick={clearLocalStorage}>Clear Storage</Button></span>
+<span><button class="main-button" on:click={clearLocalStorage}>Clear Storage</button></span>
 <div>
     {#await getUser()}
         <p>Logged In...</p>
