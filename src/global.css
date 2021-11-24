@@ -7,13 +7,15 @@ button.main-button {
     font-size: 1rem;
     font-weight: 300;
     padding: 0.5rem;
-    transition: 1s;
+    transform: scale(0.9);
+    transition: 0.25s;
 }
 
 button.main-button:hover {
     border-image-slice: 1;
-    animation: gradient-rotate 5s infinite;
+    animation: gradient-rotate 3s infinite;
     animation-timing-function: linear;
+    transform: scale(1); 
 }
 
 @keyframes gradient-rotate {
