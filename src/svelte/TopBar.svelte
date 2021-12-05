@@ -3,19 +3,17 @@
     import SpotifyLogin from './SpotifyLogin.svelte';
 
     import logo512 from '../img/logo/512x512.png';
-
-    export let name: string;
 </script>
 
 <header>
     <div id="left-group" class="header-group">
         <img src="{logo512}" alt="Nutilities Logo">
-        <h1>Hello, <a href="{window.location.origin + window.location.pathname}">{name}</a>!</h1>
+        <h1>Nutilities</h1>
         <Link to="/">
             <button class="main-button">Home</button>
         </Link>
-        <Link to="/other">
-            <button class="main-button">Other</button>
+        <Link to="/calendar">
+            <button class="main-button">Calendar</button>
         </Link>
     </div>
     <div id="right-group" class="header-group">
@@ -67,13 +65,5 @@
         color: var(--c-light-gray);
         font-family: 'Lobster', cursive;
         margin: 0 0.5rem;
-    }
-
-    h1 a {
-        color: inherit;
-    }
-
-    h1 a:not(:hover) {
-        text-decoration: none;
     }
 </style>

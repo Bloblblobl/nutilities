@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Calendar from './Calendar.svelte';
     import Grid from './Grid.svelte';
     import Route from './Route.svelte';
     import TopBar from './TopBar.svelte';
@@ -7,19 +8,17 @@
     // import * as database from 'firebase/database';
     import '../global.css';
     
-    export let name: string;
-
     // const dbRef: database.DatabaseReference = database.ref(db.realtime);
     // console.log(database.child(dbRef, 'dynamic-bookmarks'));
 </script>
 
-<TopBar {name}/>
+<TopBar/>
 <main>
     <Route path="/">
         <Grid rows={4} columns={5}/>
     </Route>
-    <Route path="/other">
-        <h1>This is other.</h1>
+    <Route path="/calendar">
+        <Calendar/>
     </Route>
 </main>
 
@@ -41,18 +40,17 @@
     }
 
     :global(html, body) {
-        width: 100%;
         height: 100%;
-
         margin: 0;
+        width: 100%;
     }
 
     main {
-        padding: 1rem;
+        background-color: var(--c-dark-gray);
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         height: calc(100% - var(--topbar-height));
-        background-color: var(--c-dark-gray);
+        padding: 1rem;
     }
 </style>

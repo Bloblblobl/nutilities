@@ -5,7 +5,7 @@ const functions = getFunctions(app);
 // const functions = getFunctions(app, 'http://localhost:5001');
 // connectFunctionsEmulator(functions, 'localhost', 5001);
 
-type SpotifyAuthorizeResponse = { redirectURL: string, scopes: string };
+type SpotifyAuthorizeResponse = { redirectURI: string, scopes: string };
 export const spotifyAuthorize = httpsCallable<unknown, SpotifyAuthorizeResponse>(
     functions,
     'spotifyAuthorize'

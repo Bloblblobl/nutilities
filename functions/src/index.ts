@@ -5,27 +5,35 @@ import { request } from 'gaxios';
 const spotifyClientID = functions.config().spotify.clientid;
 const spotifyClientSecret = functions.config().spotify.clientsecret;
 
-export const spotifyAuthorize = functions.https.onCall((data, context) => {
+export const spotifyAuthorize = functions.https.onCall((data, _) => {
     const queryParameters = {
         client_id: spotifyClientID,
         response_type: 'code',
-        redirect_uri: data?.baseRedirectURL ?? 'http://localhost:8080/',
+        redirect_uri: data?.redirectURI ?? 'http://localhost:8080/',
         scope: data?.scopes ?? '',
     };
 
     const authURL: URL = new URL('https://accounts.spotify.com/authorize');
     authURL.search = new URLSearchParams(queryParameters).toString();
     return {
-        redirectURL: authURL.toString(),
+        redirectURI: authURL.toString(),
     };
 });
 
-export const spotifyRequestAccessToken = functions.https.onCall((data, context) => {
-    const queryParameters = {
-        grant_type: 'authorization_code',
-        code: data.code,
-        redirect_uri: data?.baseRedirectURL ?? 'http://localhost:8080/',
-    };
+export const spotifyRequestAccessToken = functions.https.onCall((data, _) => {
+    let queryParameters;
+    if ('refreshToken' in data) {
+        queryParameters = {
+            grant_type: 'refresh_token',
+            refresh_token: data.refreshToken,
+        };
+    } else {
+        queryParameters = {
+            grant_type: 'authorization_code',
+            code: data.code,
+            redirect_uri: data?.redirectURI ?? 'http://localhost:8080/',
+        };
+    }
 
     const tokenURL: URL = new URL('https://accounts.spotify.com/api/token');
     tokenURL.search = new URLSearchParams(queryParameters).toString();

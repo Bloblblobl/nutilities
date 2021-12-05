@@ -8,7 +8,7 @@
 
     const logIn = () => {
         spotify.redirectToAuthorize().then((result) => {
-            window.location.href = result.data.redirectURL;
+            window.location.href = result.data.redirectURI;
         });
     }
 
@@ -19,7 +19,7 @@
     }
 
     if ('code' in queryParameters) {
-        spotify.requestAccessToken(queryParameters.code).then(() => {
+        spotify.requestAccessToken({ code: queryParameters.code }).then(() => {
             delete queryParameters.code;
             window.location.search = new URLSearchParams(queryParameters).toString();
         });
