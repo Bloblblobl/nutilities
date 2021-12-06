@@ -64,7 +64,6 @@
 
     p {
         color: white;
-        font-family: 'Rubik', cursive;
         font-weight: 300;
         margin: auto;
         text-align: center;

@@ -43,6 +43,7 @@
         height: 100%;
         margin: 0;
         width: 100%;
+        font-family: 'Rubik', cursive;
     }
 
     main {

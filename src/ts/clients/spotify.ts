@@ -2,7 +2,7 @@ import { db } from './db';
 import { spotifyAuthorize, spotifyRequestAccessToken } from './functions';
 
 const BASE_API_URL = 'https://api.spotify.com/v1/';
-const REDIRECT_URI = window.location.origin;
+const REDIRECT_URI = window.location.origin + '/';
 
 const SCOPES = [
     'user-read-recently-played',
@@ -26,7 +26,7 @@ async function requestAccessToken(params: RequestAccessTokenParams) {
     }
 }
 
-async function makeRequest(endpoint: string, method: string) {
+async function makeRequest(endpoint: string, method: string = 'GET') {
     const accessToken = db.local.getItem('SpotifyAccessToken');
     const refreshToken = db.local.getItem('SpotifyRefreshToken');
     const _makeRequest = async () => {
@@ -38,7 +38,7 @@ async function makeRequest(endpoint: string, method: string) {
             }
         });
     }
-    
+
     let response = await _makeRequest();
 
     // if we receive a 401 response, try to reauth using the refresh token then retry the request
@@ -50,8 +50,13 @@ async function makeRequest(endpoint: string, method: string) {
     return response.json();
 }
 
+async function search(searchString: string) {
+    makeRequest('search');
+}
+
 export {
     redirectToAuthorize,
     requestAccessToken,
     makeRequest,
+    search,
 };

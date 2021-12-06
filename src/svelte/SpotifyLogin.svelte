@@ -33,13 +33,13 @@
             return JSON.parse(user);
         }
 
-        const response = await spotify.makeRequest('me', 'GET');
+        const response = await spotify.makeRequest('me');
         db.local.setItem('SpotifyUser', JSON.stringify(response));
         return response;
     }
 
     async function getRecentlyPlayedTracks() {
-        const response = await spotify.makeRequest('me/player/recently-played', 'GET');
+        const response = await spotify.makeRequest('me/player/recently-played');
         recentlyPlayed.set(response);
     }
 
@@ -71,7 +71,6 @@
         margin: 0 1rem;
         color: white;
         font-size: 1.25rem;
-        font-family: 'Rubik', cursive;
         font-weight: 300;
     }
 
