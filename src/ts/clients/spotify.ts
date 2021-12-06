@@ -27,9 +27,8 @@ async function requestAccessToken(params: RequestAccessTokenParams) {
 }
 
 async function makeRequest(endpoint: string, method: string = 'GET') {
-    const accessToken = db.local.getItem('SpotifyAccessToken');
-    const refreshToken = db.local.getItem('SpotifyRefreshToken');
     const _makeRequest = async () => {
+        const accessToken = db.local.getItem('SpotifyAccessToken');
         return await fetch(BASE_API_URL + endpoint, {
             method,
             headers: {
@@ -42,6 +41,7 @@ async function makeRequest(endpoint: string, method: string = 'GET') {
     let response = await _makeRequest();
 
     // if we receive a 401 response, try to reauth using the refresh token then retry the request
+    const refreshToken = db.local.getItem('SpotifyRefreshToken');
     if (response.status === 401 && refreshToken) {
         await requestAccessToken({ refreshToken });
         response = await _makeRequest();
