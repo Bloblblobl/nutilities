@@ -1,17 +1,31 @@
 <script lang="ts">
     import * as spotify from '../ts/clients/spotify';
 
-    const search = async () => {
-        const searchString = document.querySelector('#spotify-search').textContent;
-        const result = await spotify.search(searchString);
+    let search = new Promise((resolve, _) => {
+        resolve('Search for something ya nimrod!');
+    });
+
+    const onClick = () => {
+        const spotifySearch: HTMLInputElement = document.querySelector('#spotify-search');
+        search = spotify.search(spotifySearch.value);
+
     }
 </script>
 
 <section id="search-section">
     <input id="spotify-search" type="search" />
-    <button class="main-button" on:click={search}>Search</button>
+    <button class="main-button" on:click={onClick}>Search</button>
 </section>
-<p id="search-results"></p>
+<p id="search-results">
+    {#await search}
+        Searching...
+    {:then searchResults} 
+        {JSON.stringify(searchResults, null, 4)}
+    {:catch error}
+        Search failed :(
+        Error: {error}
+    {/await}
+</p>
 
 <style>
     #search-section {
@@ -32,5 +46,7 @@
         background-color: var(--c-spotify-black);
         color: white;
         font-size: 1rem;
+        overflow: auto;
+        white-space: pre;
     }
 </style>

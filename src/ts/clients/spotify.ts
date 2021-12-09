@@ -50,8 +50,22 @@ async function makeRequest(endpoint: string, method: string = 'GET') {
     return response.json();
 }
 
-async function search(searchString: string) {
-    makeRequest('search');
+async function search(
+    searchString: string,
+    searchTypes: Array<string> = ['album', 'artist', 'track']
+) {
+    const queryParameters = {
+        q: searchString,
+        type: searchTypes.join(','),
+    }
+    // manually construct the queryString instead of using new URLSearchParams() because
+    // URLSearchParams automatically URL encodes the values in the object, and spotify
+    // expects the type parameter to maintain the commas unencoded
+    const queryString = Object.entries(queryParameters).reduce((result, [key, value]) => {
+        return [...result, `${key.toString()}=${value.toString()}`];
+    }, []).join('&');
+    const response = await makeRequest(`search?${queryString}`);
+    return response;
 }
 
 export {
