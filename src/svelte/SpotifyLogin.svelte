@@ -15,6 +15,7 @@
     const clearLocalStorage = () => {
         db.local.removeItem('SpotifyAccessToken');
         db.local.removeItem('SpotifyRefreshToken');
+        db.local.removeItem('SpotifyUser');
         window.location.reload();
     }
 
