@@ -61,6 +61,10 @@
         transition: 1s;
     }
 
+    img:hover + h1 {
+        color: white;
+    }
+
     h1 {
         color: var(--c-light-gray);
         font-family: 'Lobster', cursive;
