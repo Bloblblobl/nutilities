@@ -8,7 +8,23 @@
     const onClick = () => {
         const spotifySearch: HTMLInputElement = document.querySelector('#spotify-search');
         search = spotify.search(spotifySearch.value);
+    }
 
+    const displaySearchResults = (searchResults) => {
+        const exclude = ['available_markets'];
+        const filterResults = (results) => {
+            return Object.entries(results).reduce((acc, [key, value]) => {
+                if (exclude.includes(key)) {
+                    return acc;
+                } else if (value !== null && typeof value === 'object') {
+                    acc[key] = filterResults(value);
+                } else {
+                    acc[key] = value;
+                }
+                return acc;
+            }, {});
+        };
+        return JSON.stringify(filterResults(searchResults), null, 4);
     }
 </script>
 
@@ -20,7 +36,7 @@
     {#await search}
         Searching...
     {:then searchResults} 
-        {JSON.stringify(searchResults, null, 4)}
+        {displaySearchResults(searchResults)}
     {:catch error}
         Search failed :(
         Error: {error}
