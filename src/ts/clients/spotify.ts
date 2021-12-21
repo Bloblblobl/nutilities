@@ -8,6 +8,43 @@ const SCOPES = [
     'user-read-recently-played',
 ];
 
+class Album {
+    albumID: string;
+    spotifyURI: string;
+    data: any;
+
+    constructor(albumID: string, albumData: any = null) {
+        this.albumID = albumID;
+        this.spotifyURI = `spotify:album:${albumID}`;
+        this.data = albumData;
+
+        // try fetching the data from local cache
+        if (this.data === null) {
+            this.data = JSON.parse(db.local.getItem(this.spotifyURI));
+            db.local.setItem(this.spotifyURI, JSON.stringify(this.data));
+        }
+    }
+
+    async initialize() {
+        if (this.data === null) {
+            this.data = await makeRequest(`albums/${this.albumID}`);
+            db.local.setItem(this.spotifyURI, JSON.stringify(this.data));
+        }
+    }
+
+    get name() {
+        return this.data?.name !== null ? this.data.name : '';
+    }
+
+    get artistName() {
+        return this.data?.artists?.length ? this.data.artists[0].name : '';
+    }
+
+    get imageURL() {
+        return this.data?.images?.length ? this.data.images[0].url : '';
+    }
+}
+
 async function redirectToAuthorize() {
     let scopes = SCOPES.join(' ');
     let response = await spotifyAuthorize({ redirectURI: REDIRECT_URI, scopes });
@@ -70,6 +107,7 @@ async function search(
 
 
 export {
+    Album,
     redirectToAuthorize,
     requestAccessToken,
     makeRequest,
