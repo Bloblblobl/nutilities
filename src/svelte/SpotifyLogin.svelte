@@ -13,9 +13,12 @@
     }
 
     const clearLocalStorage = () => {
-        db.local.removeItem('SpotifyAccessToken');
-        db.local.removeItem('SpotifyRefreshToken');
-        db.local.removeItem('SpotifyUser');
+        Object.keys(db.local).forEach(key => {
+            const keyParts = key.split(':');
+            if (keyParts.length > 1 && keyParts[0] === 'spotify') {
+                db.local.removeItem(key);
+            }
+        });
         window.location.reload();
     }
 
@@ -26,16 +29,16 @@
         });
     }
 
-    const accessToken = db.local.getItem('SpotifyAccessToken');
+    const accessToken = db.local.getItem('spotify:access-token');
 
     async function getUser() {
-        const user = db.local.getItem('SpotifyUser');
+        const user = db.local.getItem('spotify:user-profile');
         if (user !== null) {
             return JSON.parse(user);
         }
 
         const response = await spotify.makeRequest('me');
-        db.local.setItem('SpotifyUser', JSON.stringify(response));
+        db.local.setItem('spotify:user-profile', JSON.stringify(response));
         return response;
     }
 
@@ -50,7 +53,7 @@
 {#if accessToken === null}
 <span><button class="main-button" on:click={logIn}>Log In</button></span>
 {:else}
-<span><button class="main-button" on:click={clearLocalStorage}>Clear Storage</button></span>
+<span><button class="main-button" on:click={clearLocalStorage}>Clear Storage (Spotify)</button></span>
 <div>
     {#await getUser()}
         <p>Logged In...</p>

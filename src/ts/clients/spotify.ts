@@ -20,15 +20,15 @@ async function requestAccessToken(params: RequestAccessTokenParams) {
         params['redirectURI'] = REDIRECT_URI;
     }
     let response = await spotifyRequestAccessToken(params);
-    db.local.setItem('SpotifyAccessToken', response.data.access_token);
+    db.local.setItem('spotify:access-token', response.data.access_token);
     if ('refresh_token' in response.data) {
-        db.local.setItem('SpotifyRefreshToken', response.data.refresh_token);
+        db.local.setItem('spotify:refresh-token', response.data.refresh_token);
     }
 }
 
 async function makeRequest(endpoint: string, method: string = 'GET') {
     const _makeRequest = async () => {
-        const accessToken = db.local.getItem('SpotifyAccessToken');
+        const accessToken = db.local.getItem('spotify:access-token');
         return await fetch(BASE_API_URL + endpoint, {
             method,
             headers: {
@@ -41,7 +41,7 @@ async function makeRequest(endpoint: string, method: string = 'GET') {
     let response = await _makeRequest();
 
     // if we receive a 401 response, try to reauth using the refresh token then retry the request
-    const refreshToken = db.local.getItem('SpotifyRefreshToken');
+    const refreshToken = db.local.getItem('spotify:refresh-token');
     if (response.status === 401 && refreshToken) {
         await requestAccessToken({ refreshToken });
         response = await _makeRequest();
@@ -67,6 +67,7 @@ async function search(
     const response = await makeRequest(`search?${queryString}`);
     return response;
 }
+
 
 export {
     redirectToAuthorize,
