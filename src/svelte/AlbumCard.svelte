@@ -27,36 +27,36 @@
 
 <style>
 article {
-  align-items: center;
-  background-color: var(--c-spotify-black);
-  border-radius: 0.5rem;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  height: 15rem;
-  justify-content: center;
-  width: 15rem;
+    align-items: center;
+    background-color: var(--c-spotify-black);
+    border-radius: 0.5rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 15rem;
+    justify-content: center;
+    width: 15rem;
 }
 
 img {
-  width: 10rem;
-  height: 10rem;
+    width: 10rem;
+    height: 10rem;
 }
 
 p {
-  margin-block: 0;
-  max-width: 90%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    margin-block: 0;
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .title {
-  margin-top: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .artist {
-  font-size: 0.8rem;
-  margin-block: 0.5rem;
+    font-size: 0.8rem;
+    margin-block: 0.5rem;
 }
 </style>

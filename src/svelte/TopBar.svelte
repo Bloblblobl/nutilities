@@ -12,6 +12,9 @@
         <Link to="/">
             <button class="main-button">Home</button>
         </Link>
+        <Link to="/search">
+            <button class="main-button">Search</button>
+        </Link>
         <Link to="/calendar">
             <button class="main-button">Calendar</button>
         </Link>
