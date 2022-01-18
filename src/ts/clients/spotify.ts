@@ -1,5 +1,6 @@
 import { db } from './db';
 import { spotifyAuthorize, spotifyRequestAccessToken } from './functions';
+import { spotifySearchResults } from '../stores';
 
 const BASE_API_URL = 'https://api.spotify.com/v1/';
 const REDIRECT_URI = window.location.origin + '/';
@@ -20,15 +21,14 @@ class Album {
 
         // try fetching the data from local cache
         if (this.data === null) {
-            this.data = JSON.parse(db.local.getItem(this.spotifyURI));
-            db.local.setItem(this.spotifyURI, JSON.stringify(this.data));
+            this.data = JSON.parse(db.local.get(this.spotifyURI));
         }
     }
 
     async initialize() {
         if (this.data === null) {
             this.data = await makeRequest(`albums/${this.albumID}`);
-            db.local.setItem(this.spotifyURI, JSON.stringify(this.data));
+            db.local.set(this.spotifyURI, JSON.stringify(this.data));
         }
     }
 
@@ -57,15 +57,15 @@ async function requestAccessToken(params: RequestAccessTokenParams) {
         params['redirectURI'] = REDIRECT_URI;
     }
     let response = await spotifyRequestAccessToken(params);
-    db.local.setItem('spotify:access-token', response.data.access_token);
+    db.local.set('spotify:access-token', response.data.access_token);
     if ('refresh_token' in response.data) {
-        db.local.setItem('spotify:refresh-token', response.data.refresh_token);
+        db.local.set('spotify:refresh-token', response.data.refresh_token);
     }
 }
 
 async function makeRequest(endpoint: string, method: string = 'GET') {
     const _makeRequest = async () => {
-        const accessToken = db.local.getItem('spotify:access-token');
+        const accessToken = db.local.get('spotify:access-token');
         return await fetch(BASE_API_URL + endpoint, {
             method,
             headers: {
@@ -78,7 +78,7 @@ async function makeRequest(endpoint: string, method: string = 'GET') {
     let response = await _makeRequest();
 
     // if we receive a 401 response, try to reauth using the refresh token then retry the request
-    const refreshToken = db.local.getItem('spotify:refresh-token');
+    const refreshToken = db.local.get('spotify:refresh-token');
     if (response.status === 401 && refreshToken) {
         await requestAccessToken({ refreshToken });
         response = await _makeRequest();
@@ -87,7 +87,7 @@ async function makeRequest(endpoint: string, method: string = 'GET') {
     return response.json();
 }
 
-async function search(
+async function _search(
     searchString: string,
     searchTypes: Array<string> = ['album', 'artist', 'track']
 ) {
@@ -103,6 +103,24 @@ async function search(
     }, []).join('&');
     const response = await makeRequest(`search?${queryString}`);
     return response;
+}
+
+async function search(
+    searchString: string,
+    searchTypes: Array<string> = ['album', 'artist', 'track']
+) {
+    const rawResult = await _search(searchString, searchTypes);
+    let searchResults = rawResult;
+    if ('albums' in rawResult) {
+        searchResults = {
+            albums: rawResult.albums.items.reduce((result, album) => {
+                result[album.id] = album;
+                return result;
+            }, {}),
+        };
+    }
+    spotifySearchResults.set(searchResults);
+    return searchResults;
 }
 
 

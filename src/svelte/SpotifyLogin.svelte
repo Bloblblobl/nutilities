@@ -13,10 +13,10 @@
     }
 
     const clearLocalStorage = () => {
-        Object.keys(db.local).forEach(key => {
+        db.local.getKeys().forEach(key => {
             const keyParts = key.split(':');
             if (keyParts.length > 1 && keyParts[0] === 'spotify') {
-                db.local.removeItem(key);
+                db.local.delete(key);
             }
         });
         window.location.reload();
@@ -29,16 +29,16 @@
         });
     }
 
-    const accessToken = db.local.getItem('spotify:access-token');
+    const accessToken = db.local.get('spotify:access-token');
 
     async function getUser() {
-        const user = db.local.getItem('spotify:user-profile');
+        const user = db.local.get('spotify:user-profile');
         if (user !== null) {
             return JSON.parse(user);
         }
 
         const response = await spotify.makeRequest('me');
-        db.local.setItem('spotify:user-profile', JSON.stringify(response));
+        db.local.set('spotify:user-profile', JSON.stringify(response));
         return response;
     }
 

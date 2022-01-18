@@ -1,5 +1,3 @@
-import { db } from './db';
-
 const FIRST_AAD_YEAR = 2016;
 
 function getDaysInMonth(month: number, year: number) {

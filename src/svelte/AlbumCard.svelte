@@ -1,16 +1,19 @@
 <script lang="ts">
     import { Album } from "../ts/clients/spotify";
+    import { spotifySearchResults } from "../ts/stores";
 
     export let albumID: string = '';
     let album = null;
+
     if (albumID) {
-        album = new Album(albumID);
+        const albumData = albumID in $spotifySearchResults ? $spotifySearchResults[albumID] : null;
+        album = new Album(albumID, albumData);
     }
 </script>
 
 <article>
     {#if album === null}
-        <p>No track found.</p>
+        <p>Album not found.</p>
     {:else}
         {#await album.initialize()}
             <p>Fetching album data...</p>
@@ -19,7 +22,7 @@
             <p class="title">{album.name}</p>
             <p class="artist">{album.artistName}</p>
         {:catch error}
-            <p>Album not found</p>
+            <p>Album not found.</p>
             <p>Error: {error}</p>
         {/await}
     {/if}    

@@ -3,19 +3,21 @@
 
     import { db } from '../ts/clients/db';
     import * as spotify from '../ts/clients/spotify';
+    import { getDatesThisWeek } from '../ts/clients/temporal';
 
-    let search = new Promise((resolve, _) => { resolve(''); });
-
+    let search = null;
+    let visualDisplay = true;
     let searchTypes = ['track', 'album', 'artist'];
     let selectedSearchTypes = 
-        JSON.parse(db.local.getItem('spotify:selected-search-types')) ?? [...searchTypes];
+        JSON.parse(db.local.get('spotify:selected-search-types')) ?? [...searchTypes];
 
-    let visualDisplay = true;
+    const datesThisWeek = getDatesThisWeek(new Date()).map(d => `${d.month}-${d.date}-${d.year}`);
+    let selectedDate = datesThisWeek[0];
 
     const onClick = () => {
         const spotifySearch: HTMLInputElement = document.querySelector('#spotify-search');
         search = spotify.search(spotifySearch.value, selectedSearchTypes);
-        db.local.setItem('spotify:selected-search-types', JSON.stringify(selectedSearchTypes));
+        db.local.set('spotify:selected-search-types', JSON.stringify(selectedSearchTypes));
     }
 
     const displaySearchResults = (searchResults) => {
@@ -45,7 +47,7 @@
         <div id="search-types">
             {#each searchTypes as searchType}
             <label>
-                <input type="checkbox" value="{searchType}" bind:group="{selectedSearchTypes}" />
+                <input type="checkbox" value="{searchType}" bind:group="{selectedSearchTypes}"/>
                 {searchType}s
             </label>
             {/each}
@@ -55,25 +57,39 @@
                 <input type="checkbox" name="display" bind:checked={visualDisplay}/> Visual Display
             </label>
         </div>
+        <div id="aad-date">
+            {#each datesThisWeek as date}
+                <label>
+                    <input type="radio" value="{date}" bind:group="{selectedDate}"/> <span>{date}</span>
+                </label>
+            {/each}
+        </div>
     </div>
 </section>
 <section id="search-results">
-    {#await search}
-        <p>Searching...</p>
-    {:then searchResults}
-        {#if visualDisplay && typeof searchResults === 'object' && 'albums' in searchResults}
-            <div id="visual-results">
-                {#each searchResults['albums'].items as album}
-                    <AlbumCard albumID={album['id']}/>
-                {/each}
-            </div>
-        {:else}
-            <p>{displaySearchResults(searchResults)}</p>
-        {/if}
-    {:catch error}
-        <p>Search failed :(</p>
-        <p>Error: {error}</p>
-    {/await}
+    {#if search !== null}
+        {#await search}
+            <p>Searching...</p>
+        {:then searchResults}
+            {#if visualDisplay && typeof searchResults === 'object' && 'albums' in searchResults}
+                <div id="visual-results">
+                    {#each Object.keys(searchResults['albums']) as albumID}
+                        <div class="album-container">
+                            <AlbumCard albumID={albumID}/>
+                            <button class="main-button" value="{albumID}">Set as AAD</button>
+                        </div>
+                    {/each}
+                </div>
+            {:else}
+                <p>{displaySearchResults(searchResults)}</p>
+            {/if}
+        {:catch error}
+            <p>Search failed :(</p>
+            <p>Error: {error}</p>
+        {/await}
+    {:else}
+        <p>No results... search for something!</p>
+    {/if}
 </section>
 
 <style>
@@ -94,6 +110,30 @@
     #search-types {
         display: flex;
         flex-direction: column;
+    }
+
+    #aad-date {
+        color: white;
+        display: flex;
+        margin-left: 1rem;
+    }
+
+    #aad-date label {
+        align-items: center;
+        display: flex;
+    }
+
+    #aad-date label input {
+        display: none;
+    }
+
+    #aad-date label span {
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    #aad-date label input:checked + span {
+        border: solid 1px white;
     }
 
     label {
@@ -126,5 +166,14 @@
     #visual-results {
         display: flex;
         flex-flow: wrap;
+        justify-content: center;
+    }
+
+    .album-container {
+        border: solid 1px white;
+        display: flex;
+        flex-direction: column;
+        margin: 1rem;
+        padding: 1rem;
     }
 </style>
