@@ -73,9 +73,9 @@
         {:then searchResults}
             {#if visualDisplay && typeof searchResults === 'object' && 'albums' in searchResults}
                 <div id="visual-results">
-                    {#each Object.keys(searchResults['albums']) as albumID}
+                    {#each Object.entries(searchResults['albums']) as [albumID, albumData]}
                         <div class="album-container">
-                            <AlbumCard albumID={albumID}/>
+                            <AlbumCard albumID={albumID} albumData={albumData}/>
                             <button class="main-button" value="{albumID}">Set as AAD</button>
                         </div>
                     {/each}

@@ -1,12 +1,11 @@
 <script lang="ts">
     import { Album } from "../ts/clients/spotify";
-    import { spotifySearchResults } from "../ts/stores";
 
     export let albumID: string = '';
+    export let albumData: any = null;
     let album = null;
 
     if (albumID) {
-        const albumData = albumID in $spotifySearchResults ? $spotifySearchResults[albumID] : null;
         album = new Album(albumID, albumData);
     }
 </script>

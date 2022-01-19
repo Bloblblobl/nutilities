@@ -1,6 +1,5 @@
 import { db } from './db';
 import { spotifyAuthorize, spotifyRequestAccessToken } from './functions';
-import { spotifySearchResults } from '../stores';
 
 const BASE_API_URL = 'https://api.spotify.com/v1/';
 const REDIRECT_URI = window.location.origin + '/';
@@ -119,7 +118,6 @@ async function search(
             }, {}),
         };
     }
-    spotifySearchResults.set(searchResults);
     return searchResults;
 }
 
