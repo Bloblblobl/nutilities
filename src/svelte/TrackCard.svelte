@@ -63,7 +63,6 @@
     }
 
     p {
-        color: white;
         font-weight: 300;
         margin: auto;
         text-align: center;

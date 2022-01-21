@@ -42,6 +42,10 @@
         height: 100%;
         margin: 0;
         width: 100%;
+    }
+
+    :global(html) {
+        color: white;
         font-family: 'Rubik', cursive;
     }
 

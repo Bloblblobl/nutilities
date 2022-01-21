@@ -73,7 +73,6 @@
 
     div {
         margin: 0 1rem;
-        color: white;
         font-size: 1.25rem;
         font-weight: 300;
     }

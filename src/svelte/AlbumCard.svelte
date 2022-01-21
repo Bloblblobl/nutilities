@@ -32,7 +32,6 @@ article {
     align-items: center;
     background-color: var(--c-spotify-black);
     border-radius: 0.5rem;
-    color: white;
     display: flex;
     flex-direction: column;
     height: 15rem;
