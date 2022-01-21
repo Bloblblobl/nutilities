@@ -7,9 +7,6 @@ const _realtime: Database = getDatabase(app);
 const local = {
     get: (key: string) => _local.getItem(key),
     set: (key: string, value: any) => {
-        if (value === null) {
-            return;
-        }
         try {
             _local.setItem(key, value);
         } catch (e) {
@@ -28,9 +25,9 @@ const realtime = {
         }
         return snapshot.val();
     },
-    set: (key: string, value: any) => {
+    set: async (key: string, value: any) => {
         const dbRef = ref(_realtime, key);
-        set(dbRef, value);
+        await set(dbRef, value);
     },
 }
 

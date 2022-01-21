@@ -38,6 +38,10 @@ function getDatesThisWeek(today: Date) {
             date: newDate,
             month: newMonth,
             year: newYear,
+            // chronological sort order date format to store in db
+            sortFormat: `${newYear}-${newMonth}-${newDate}`,
+            // American date format for display
+            displayFormat: `${newMonth}/${newDate}/${newYear}`,
         }
     });
 }
