@@ -5,19 +5,26 @@
     import * as spotify from '../ts/clients/spotify';
     import { getDatesThisWeek } from '../ts/clients/temporal';
 
-    let search = null;
+    let searchPromise = null;
     let visualDisplay = true;
     let searchTypes = ['track', 'album', 'artist'];
     let selectedSearchTypes = 
         JSON.parse(db.local.get('spotify:selected-search-types')) ?? [...searchTypes];
 
-    const datesThisWeek = getDatesThisWeek(new Date()).map(d => `${d.month}-${d.date}-${d.year}`);
-    let selectedDate = datesThisWeek[0];
+    const datesThisWeek = getDatesThisWeek(new Date());
+    let selectedDate = datesThisWeek[0].sortFormat;
 
-    const onClick = () => {
+    const search = () => {
         const spotifySearch: HTMLInputElement = document.querySelector('#spotify-search');
-        search = spotify.search(spotifySearch.value, selectedSearchTypes);
+        searchPromise = spotify.search(spotifySearch.value, selectedSearchTypes);
         db.local.set('spotify:selected-search-types', JSON.stringify(selectedSearchTypes));
+    }
+
+    const setAADAlbum = async (e) => {
+        const albumID = e.target.value;
+        const dbKey = `test/spotify/thisweek/${selectedDate}`;
+        await db.realtime.set(dbKey, albumID);
+        console.log('set', selectedDate, dbKey);
     }
 
     const displaySearchResults = (searchResults) => {
@@ -41,7 +48,7 @@
 <section id="search-section">
     <div id="search-box">
         <input id="spotify-search" type="search" />
-        <button class="main-button" on:click={onClick}>Search</button>
+        <button class="main-button" on:click={search}>Search</button>
     </div>
     <div id="search-options">
         <div id="search-types">
@@ -60,15 +67,16 @@
         <div id="aad-date">
             {#each datesThisWeek as date}
                 <label>
-                    <input type="radio" value="{date}" bind:group="{selectedDate}"/> <span>{date}</span>
+                    <input type="radio" value="{date.sortFormat}" bind:group="{selectedDate}"/>
+                    <span>{date.displayFormat}</span>
                 </label>
             {/each}
         </div>
     </div>
 </section>
 <section id="search-results">
-    {#if search !== null}
-        {#await search}
+    {#if searchPromise !== null}
+        {#await searchPromise}
             <p>Searching...</p>
         {:then searchResults}
             {#if visualDisplay && typeof searchResults === 'object' && 'albums' in searchResults}
@@ -76,7 +84,9 @@
                     {#each Object.entries(searchResults['albums']) as [albumID, albumData]}
                         <div class="album-container">
                             <AlbumCard albumID={albumID} albumData={albumData}/>
-                            <button class="main-button" value="{albumID}">Set as AAD</button>
+                            <button class="main-button" value="{albumID}" on:click={setAADAlbum}>
+                                Set as AAD
+                            </button>
                         </div>
                     {/each}
                 </div>
@@ -113,7 +123,6 @@
     }
 
     #aad-date {
-        color: white;
         display: flex;
         margin-left: 1rem;
     }
@@ -137,7 +146,6 @@
     }
 
     label {
-        color: white;
         text-transform: capitalize;
     }
 
@@ -157,7 +165,6 @@
 
     #search-results {
         background-color: var(--c-spotify-black);
-        color: white;
         font-size: 1rem;
         overflow: auto;
         white-space: pre;
