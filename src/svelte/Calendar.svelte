@@ -31,10 +31,9 @@
 
 <style>
     section {
-        display: flex;
-    }
-
-    section div:not(:last-of-type) {
-        margin-right: 2rem;
+        display: grid;
+        grid-gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(15rem, max-content));
+        justify-content: center;
     }
 </style>
