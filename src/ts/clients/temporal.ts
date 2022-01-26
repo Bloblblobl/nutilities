@@ -46,7 +46,14 @@ function getDatesThisWeek(today: Date) {
     });
 }
 
+function getDateString(d: Date) {
+    // return YYYY-MM-DD formatted date string from a Date
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    return `${d.getFullYear()}-${month}-${d.getDate()}`
+}
+
 export {
     getDaysInMonth,
     getDatesThisWeek,
+    getDateString,
 }

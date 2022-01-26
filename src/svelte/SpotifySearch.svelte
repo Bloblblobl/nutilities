@@ -24,7 +24,6 @@
         const albumID = e.target.value;
         const dbKey = `test/spotify/thisweek/${selectedDate}`;
         await db.realtime.set(dbKey, albumID);
-        console.log('set', selectedDate, dbKey);
     }
 
     const displaySearchResults = (searchResults) => {
