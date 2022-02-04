@@ -78,23 +78,21 @@
     }
 
     a {
-        display: flex;
-        justify-content: space-between;
         align-items: center;
         color: inherit;
+        display: flex;
+        justify-content: space-between;
+        text-decoration: none;
     }
 
     a:hover {
         color: var(--c-spotify-light-green);
-    }
-
-    a:not(:hover) {
-        text-decoration: none;
+        text-decoration: underline;
     }
 
     img {
+        border-radius: 50%;
         margin: 0 0.5rem;
         max-height: 3rem;
-        border-radius: 50%;
     }
 </style>

@@ -163,8 +163,12 @@
     }
 
     #search-results {
+        align-items: center;
         background-color: var(--c-spotify-black);
+        display: flex;
         font-size: 1rem;
+        height: 100%;
+        justify-content: center;
         overflow: auto;
         white-space: pre;
     }
