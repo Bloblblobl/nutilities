@@ -13,7 +13,14 @@ function getDaysInMonth(month: number, year: number) {
     return [31, daysInFebruary, 31, 30, 31, 30, 31, 30, 30, 31, 30, 31][month];
 }
 
-function getDatesThisWeek(today: Date) {
+type SimpleDate = {
+    date: number;
+    month: number;
+    year: number;
+    sortFormat: string;
+    displayFormat: string;
+};
+function getDatesThisWeek(today: Date): SimpleDate[] {
     const day = today.getDay();
     const date = today.getDate();
     const year = today.getFullYear();
@@ -48,8 +55,9 @@ function getDatesThisWeek(today: Date) {
 
 function getDateString(d: Date) {
     // return YYYY-MM-DD formatted date string from a Date
+    const date = d.getDate().toString().padStart(2, '0');
     const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    return `${d.getFullYear()}-${month}-${d.getDate()}`
+    return `${d.getFullYear()}-${month}-${date}`
 }
 
 export {

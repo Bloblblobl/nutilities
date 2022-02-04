@@ -1,5 +1,5 @@
 import { app } from './firebase';
-import { Database, getDatabase, get, set, ref } from 'firebase/database';
+import { Database, getDatabase, get, onValue, ref, set, DataSnapshot } from 'firebase/database';
 
 const _local: Storage = window.localStorage;
 const _realtime: Database = getDatabase(app);
@@ -28,6 +28,10 @@ const realtime = {
     set: async (key: string, value: any) => {
         const dbRef = ref(_realtime, key);
         await set(dbRef, value);
+    },
+    on: (key: string, callback: (snapshot: DataSnapshot) => unknown) => {
+        const dbRef = ref(_realtime, key);
+        onValue(dbRef, callback);
     },
 }
 

@@ -1,38 +1,22 @@
 <script lang="ts">
-    import { db } from '../ts/clients/db';
-    import { getDatesThisWeek, getDateString } from "../ts/clients/temporal";
+    import { getDateString } from "../ts/clients/temporal";
+    import { aadDate, aadAlbums } from '../ts/stores';
+
     import AlbumCard from './AlbumCard.svelte';
 
-    let d = new Date();
-    const dateString = getDateString(d);
-    $: dates = getDatesThisWeek(d);
-    $: dateAlbumMap = getAlbums(dates);
-
     // append colon so that the date is created with correct locale settings
-    const setDate = (e) => d = new Date(`${e.target.value}:`);
-
-    const getAlbums = async (dates) => {
-        const dateAlbumMap = {};
-        for (const date of dates) {
-            const dbKey = `test/spotify/thisweek/${date.sortFormat}`;
-            dateAlbumMap[date.sortFormat] = await db.realtime.get(dbKey);
-        }
-        return dateAlbumMap;
-    }
+    const setDate = (e) => aadDate.set(new Date(`${e.target.value}:`));
+    $: currentAlbums = Object.entries($aadAlbums.current) as [string, string][];
 </script>
 
-<input type="date" on:change={setDate} value="{dateString}"/>
+<input type="date" on:change={setDate} value="{getDateString($aadDate)}"/>
 <section>
-{#await dateAlbumMap}
-    <p>Loading</p>
-{:then m}
-    {#each dates as date}
-        <div>
-            <p>{date.displayFormat}</p>
-            <AlbumCard albumID={m[date.sortFormat]}></AlbumCard>
-        </div>
-    {/each}
-{/await}
+{#each currentAlbums as [date, albumID] (date)}
+    <div>
+        <p>{date}</p>
+        <AlbumCard albumID={albumID}></AlbumCard>
+    </div>
+{/each}
 </section>
 
 <style>
