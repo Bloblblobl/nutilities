@@ -1,9 +1,11 @@
 <script lang="ts">
+    import AADDateControl from './AADDateControl.svelte';
     import AlbumCard from './AlbumCard.svelte';
 
     import { db } from '../ts/clients/db';
     import * as spotify from '../ts/clients/spotify';
     import { getDatesThisWeek } from '../ts/clients/temporal';
+    import { aadDate } from '../ts/stores';
 
     let searchPromise = null;
     let visualDisplay = true;
@@ -11,8 +13,8 @@
     let selectedSearchTypes = 
         JSON.parse(db.local.get('spotify:selected-search-types')) ?? [...searchTypes];
 
-    const datesThisWeek = getDatesThisWeek(new Date());
-    let selectedDate = datesThisWeek[0].sortFormat;
+    $: datesThisWeek = getDatesThisWeek($aadDate);
+    let selectedDate = datesThisWeek?.[0].sortFormat;
 
     const search = () => {
         const spotifySearch: HTMLInputElement = document.querySelector('#spotify-search');
@@ -64,12 +66,15 @@
             </label>
         </div>
         <div id="aad-date">
-            {#each datesThisWeek as date}
-                <label>
-                    <input type="radio" value="{date.sortFormat}" bind:group="{selectedDate}"/>
-                    <span>{date.displayFormat}</span>
-                </label>
-            {/each}
+            <AADDateControl />
+            <section id="aad-date-picker">
+                {#each datesThisWeek as date}
+                    <label>
+                        <input type="radio" value="{date.sortFormat}" bind:group="{selectedDate}"/>
+                        <span>{date.displayFormat}</span>
+                    </label>
+                {/each}
+            </section>
         </div>
     </div>
 </section>
@@ -123,24 +128,29 @@
 
     #aad-date {
         display: flex;
+        flex-direction: column;
         margin-left: 1rem;
     }
 
-    #aad-date label {
+    #aad-date-picker {
+        display: flex;
+    }
+
+    #aad-date-picker label {
         align-items: center;
         display: flex;
     }
 
-    #aad-date label input {
+    #aad-date-picker label input {
         display: none;
     }
 
-    #aad-date label span {
+    #aad-date-picker label span {
         cursor: pointer;
         padding: 0.5rem;
     }
 
-    #aad-date label input:checked + span {
+    #aad-date-picker label input:checked + span {
         border: solid 1px white;
     }
 

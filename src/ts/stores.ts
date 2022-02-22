@@ -3,6 +3,12 @@ import { writable, derived } from 'svelte/store';
 import { db } from './clients/db';
 import { getDatesThisWeek } from './clients/temporal';
 
+const setupAadAlbums = () => {
+    db.realtime.on('test/spotify/thisweek', (snapshot: DataSnapshot) => {
+        const dates = snapshot.val();
+        Object.entries(dates).forEach(([date, albumID]) => aadAlbums.set(date, albumID));
+    });
+};
 
 // inspired by https://svelte.dev/repl/ccbc94cb1b4c493a9cf8f117badaeb31?version=3.16.7
 function createMapStore(initialValue) {
@@ -40,15 +46,21 @@ function createMapStore(initialValue) {
 export const route = writable('/');
 export const recentlyPlayed = writable({});
 
-const setupAadAlbums = () => {
-    db.realtime.on('test/spotify/thisweek', (snapshot: DataSnapshot) => {
-        const dates = snapshot.val();
-        console.log(dates);
-        Object.entries(dates).forEach(([date, albumID]) => aadAlbums.set(date, albumID));
+const createDateStore = (initialValue) => {
+    const store = writable(initialValue);
+    const changeDate = (deltaDays) => store.update(d => {
+       d.setDate(d.getDate() + deltaDays);
+       return d;     
     });
-};
+    return {
+        ...store,
+        changeDate,
+        previousWeek: () => changeDate(-7),
+        nextWeek: () => changeDate(7),
+    }
+}
 
-export const aadDate = writable(new Date());
+export const aadDate = createDateStore(new Date());
 export const aadAlbums = createMapStore({});
 
 setupAadAlbums();

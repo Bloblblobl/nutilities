@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { hoverScrollText } from "../ts/actions";
     import { Album } from "../ts/clients/spotify";
 
     export let albumID: string = '';
@@ -14,12 +15,12 @@
     {#if album === null}
         <p>Album not found.</p>
     {:else}
-        {#await album.initialize()}
+        {#await album.getData()}
             <p>Fetching album data...</p>
         {:then}
             <img src="{album.imageURL}" alt="Album cover for {album.name} by {album.artistName}" />
-            <p class="title">{album.name}</p>
-            <p class="artist">{album.artistName}</p>
+            <p class="title" use:hoverScrollText><span>{album.name}</span></p>
+            <p class="artist" use:hoverScrollText><span>{album.artistName}</span></p>
         {:catch error}
             <p>Album not found.</p>
             <p>Error: {error}</p>
@@ -45,11 +46,16 @@ img {
 }
 
 p {
+    animation-timing-function: linear;
     margin-block: 0;
     max-width: 90%;
     overflow: hidden;
-    text-overflow: ellipsis;
+    position: relative;
     white-space: nowrap;
+}
+
+span {
+    display: inline-block;
 }
 
 .title {

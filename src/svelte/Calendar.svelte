@@ -1,15 +1,12 @@
 <script lang="ts">
-    import { getDateString } from "../ts/clients/temporal";
-    import { aadDate, aadAlbums } from '../ts/stores';
-
+    import { aadAlbums } from '../ts/stores';
+    import AADDateControl from './AADDateControl.svelte';
     import AlbumCard from './AlbumCard.svelte';
 
-    // append colon so that the date is created with correct locale settings
-    const setDate = (e) => aadDate.set(new Date(`${e.target.value}:`));
     $: currentAlbums = Object.entries($aadAlbums.current) as [string, string][];
 </script>
 
-<input type="date" on:change={setDate} value="{getDateString($aadDate)}"/>
+<AADDateControl />
 <section>
 {#each currentAlbums as [date, albumID] (date)}
     <div>
@@ -20,11 +17,6 @@
 </section>
 
 <style>
-    input[type="date"] {
-        align-self: center;
-        max-width: 15rem;
-    }
-
     section {
         display: grid;
         grid-gap: 1rem;
