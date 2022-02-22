@@ -11,28 +11,30 @@ const SCOPES = [
 class Album {
     albumID: string;
     spotifyURI: string;
+    dbKey: string;
     data: any;
 
     constructor(albumID: string, albumData: any = null) {
         this.albumID = albumID;
         this.spotifyURI = `spotify:album:${albumID}`;
+        this.dbKey = `test/spotify/albums/${this.albumID}`;
         this.data = albumData;
-
-        // try fetching the data from local cache
-        if (this.data === null) {
-            this.data = JSON.parse(db.local.get(this.spotifyURI));
-        }
     }
 
-    async initialize() {
+    async getData() {
+        if (this.data === null) {
+            this.data = JSON.parse(await db.realtime.get(this.dbKey));
+        }
         if (this.data === null) {
             this.data = await makeRequest(`albums/${this.albumID}`);
-            db.local.set(this.spotifyURI, JSON.stringify(this.data));
+        }
+        if (this.data !== null) {
+            await db.realtime.set(this.dbKey, JSON.stringify(this.data));
         }
     }
 
     get name() {
-        return this.data?.name !== null ? this.data.name : '';
+        return this.data?.name ?? '';
     }
 
     get artistName() {
