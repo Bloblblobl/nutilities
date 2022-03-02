@@ -26,7 +26,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
 
     :root {
-        --topbar-height: 4rem;
+        --topbar-height: 3.5rem;
 
         --c-light-gray: #b5bec6;
         --c-dark-gray: #2b2d42;

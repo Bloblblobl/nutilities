@@ -51,9 +51,9 @@
 </script>
 
 {#if accessToken === null}
-<span><button class="main-button" on:click={logIn}>Log In</button></span>
+<button class="main-button" on:click={logIn}>Log In</button>
 {:else}
-<span><button class="main-button" on:click={clearLocalStorage}>Clear Storage (Spotify)</button></span>
+<button class="main-button" on:click={clearLocalStorage}>Clear Storage (Spotify)</button>
 <div>
     {#await getUser()}
         <p>Logged In...</p>
@@ -67,16 +67,6 @@
 {/if}
 
 <style>
-    span {
-        padding: 0 1rem;
-    }
-
-    div {
-        margin: 0 1rem;
-        font-size: 1.25rem;
-        font-weight: 300;
-    }
-
     a {
         align-items: center;
         color: inherit;
@@ -90,9 +80,15 @@
         text-decoration: underline;
     }
 
+    div {
+        margin: 0 1rem;
+        font-size: 1.25rem;
+        font-weight: 300;
+    }
+
     img {
         border-radius: 50%;
         margin: 0 0.5rem;
-        max-height: 3rem;
+        max-height: calc(var(--topbar-height) - 0.5rem);
     }
 </style>
