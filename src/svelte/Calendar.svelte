@@ -10,7 +10,7 @@
 </script>
 
 <CurrentDateControl />
-<section>
+<div id="calendar">
 {#each dates as date (date.sortFormat)}
     <!-- TODO: FIX {@const albumID = $datesToAlbumIDs[date.sortFormat] ?? null}-->
     <div>
@@ -18,10 +18,10 @@
         <AlbumCard albumID={$datesToAlbumIDs[date.sortFormat] ?? null}></AlbumCard>
     </div>
 {/each}
-</section>
+</div>
 
 <style>
-    section {
+    #calendar {
         display: grid;
         grid-gap: 1rem;
         grid-template-columns: repeat(auto-fit, minmax(15rem, max-content));

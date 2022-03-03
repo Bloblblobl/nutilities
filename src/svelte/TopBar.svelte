@@ -6,7 +6,7 @@
 </script>
 
 <header>
-    <section class="header-group">
+    <div class="header-group">
         <img src="{logo512}" alt="Nutilities Logo">
         <h1>Nutilities</h1>
         <Link to="/">
@@ -18,10 +18,10 @@
         <Link to="/calendar">
             <button class="main-button">Calendar</button>
         </Link>
-    </section>
-    <section class="header-group">
+    </div>
+    <div class="header-group">
         <SpotifyLogin/>
-    </section>
+    </div>
 </header>
 
 <style>

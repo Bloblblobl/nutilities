@@ -6,15 +6,15 @@
 </script>
 
 {#each [...Array(rows).keys()] as i}
-    <section>
+    <div>
         {#each [...Array(columns).keys()] as j}
             <TrackCard index={columns * i + j}/>
         {/each}
-    </section>
+    </div>
 {/each}
 
 <style>
-    section {
+    div {
         box-sizing: border-box;
         width: 100%;
         height: 100%;

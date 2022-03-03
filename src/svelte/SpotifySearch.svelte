@@ -46,7 +46,7 @@
     }
 </script>
 
-<section id="search-section">
+<div id="search-section">
     <div id="search-box">
         <input id="spotify-search" type="search" />
         <button class="main-button" on:click={search}>Search</button>
@@ -67,18 +67,18 @@
         </div>
         <div id="aad-date">
             <CurrentDateControl />
-            <section id="aad-date-picker">
+            <div id="aad-date-picker">
                 {#each datesThisWeek as date}
                     <label>
                         <input type="radio" value="{date.sortFormat}" bind:group="{selectedDate}"/>
                         <span>{date.displayFormat}</span>
                     </label>
                 {/each}
-            </section>
+            </div>
         </div>
     </div>
-</section>
-<section id="search-results">
+</div>
+<div id="search-results">
     {#if searchPromise !== null}
         {#await searchPromise}
             <p>Searching...</p>
@@ -104,7 +104,7 @@
     {:else}
         <p>No results... search for something!</p>
     {/if}
-</section>
+</div>
 
 <style>
     #search-section {

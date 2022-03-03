@@ -7,11 +7,11 @@
         (e: Event) => currentDate.set(new Date(`${(e.target as HTMLInputElement).value}:`));
 </script>
 
-<section>
+<div>
     <button on:click={() => currentDate.previousWeek()}>&lt;</button>
     <input type="date" on:change={setDate} value="{getDateString($currentDate)}"/>
     <button on:click={() => currentDate.nextWeek()}>&gt;</button>
-</section>
+</div>
 
 <style>
     input[type="date"] {
