@@ -1,11 +1,11 @@
 <script lang="ts">
-    import AADDateControl from './AADDateControl.svelte';
+    import CurrentDateControl from './CurrentDateControl.svelte';
     import AlbumCard from './AlbumCard.svelte';
 
     import { db } from '../ts/clients/db';
     import * as spotify from '../ts/clients/spotify';
     import { getDatesThisWeek } from '../ts/clients/temporal';
-    import { aadDate } from '../ts/stores';
+    import { currentDate } from '../ts/stores';
 
     let searchPromise = null;
     let visualDisplay = true;
@@ -13,7 +13,7 @@
     let selectedSearchTypes = 
         JSON.parse(db.local.get('spotify:selected-search-types')) ?? [...searchTypes];
 
-    $: datesThisWeek = getDatesThisWeek($aadDate);
+    $: datesThisWeek = getDatesThisWeek($currentDate);
     let selectedDate = datesThisWeek?.[0].sortFormat;
 
     const search = () => {
@@ -66,7 +66,7 @@
             </label>
         </div>
         <div id="aad-date">
-            <AADDateControl />
+            <CurrentDateControl />
             <section id="aad-date-picker">
                 {#each datesThisWeek as date}
                     <label>

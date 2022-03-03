@@ -1,16 +1,20 @@
 <script lang="ts">
-    import { aadAlbums } from '../ts/stores';
-    import AADDateControl from './AADDateControl.svelte';
+    import CurrentDateControl from './CurrentDateControl.svelte';
     import AlbumCard from './AlbumCard.svelte';
 
-    $: currentAlbums = Object.entries($aadAlbums.current) as [string, string][];
+    import { currentDate, datesToAlbumIDs } from '../ts/stores';
+    import { getDatesThisWeek } from '../ts/clients/temporal';
+
+
+    $: dates = getDatesThisWeek($currentDate);
 </script>
 
-<AADDateControl />
+<CurrentDateControl />
 <section>
-{#each currentAlbums as [date, albumID] (date)}
+{#each dates as date (date.sortFormat)}
+    {@const albumID = $datesToAlbumIDs[date.sortFormat] ?? null}
     <div>
-        <p>{date}</p>
+        <p>{date.displayFormat}</p>
         <AlbumCard albumID={albumID}></AlbumCard>
     </div>
 {/each}

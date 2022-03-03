@@ -1,20 +1,23 @@
 <script lang="ts">
-    import { hoverScrollText } from "../ts/actions";
     import { Album } from "../ts/clients/spotify";
+    import { hoverScrollText } from "../ts/actions";
+    import { albums } from "../ts/stores";
 
     export let albumID: string = '';
     export let albumData: any = null;
-    let album = null;
 
-    if (albumID) {
-        album = new Album(albumID, albumData);
+    if (albumID && !(albumID in $albums)) {
+        $albums[albumID] = new Album(albumID, albumData);
     }
+
+    $: album = $albums[albumID] ?? null;
+
 </script>
 
 <article>
     {#if album === null}
         <p>Album not found.</p>
-    {:else}
+    {:else if album.data === null}
         {#await album.getData()}
             <p>Fetching album data...</p>
         {:then}
@@ -25,6 +28,10 @@
             <p>Album not found.</p>
             <p>Error: {error}</p>
         {/await}
+    {:else}
+        <img src="{album.imageURL}" alt="Album cover for {album.name} by {album.artistName}" />
+        <p class="title" use:hoverScrollText><span>{album.name}</span></p>
+        <p class="artist" use:hoverScrollText><span>{album.artistName}</span></p>
     {/if}    
 </article>
 
