@@ -12,10 +12,10 @@
 <CurrentDateControl />
 <section>
 {#each dates as date (date.sortFormat)}
-    {@const albumID = $datesToAlbumIDs[date.sortFormat] ?? null}
+    <!-- TODO: FIX {@const albumID = $datesToAlbumIDs[date.sortFormat] ?? null}-->
     <div>
         <p>{date.displayFormat}</p>
-        <AlbumCard albumID={albumID}></AlbumCard>
+        <AlbumCard albumID={$datesToAlbumIDs[date.sortFormat] ?? null}></AlbumCard>
     </div>
 {/each}
 </section>
