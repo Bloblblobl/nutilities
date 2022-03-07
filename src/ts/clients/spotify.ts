@@ -1,8 +1,17 @@
 import { db } from './db';
 import { spotifyAuthorize, spotifyRequestAccessToken } from './functions';
 
+export type ItemType = typeof ITEM_TYPES[number];
+export type SearchOptions = {
+    types: ItemType[],
+    count: number,
+    offset: number,
+    exclude: string[],
+}
+
 const BASE_API_URL = 'https://api.spotify.com/v1/';
 const REDIRECT_URI = window.location.origin + '/';
+const ITEM_TYPES = ['track', 'album', 'artist'] as const;
 
 const SCOPES = [
     'user-read-recently-played',
@@ -33,16 +42,16 @@ class Album {
         }
     }
 
-    get name() {
+    get name(): string {
         return this.data?.name ?? '';
     }
 
-    get artistName() {
-        return this.data?.artists?.length ? this.data.artists[0].name : '';
+    get artistName(): string {
+        return this.data?.artists?.[0]?.name ?? '';
     }
 
-    get imageURL() {
-        return this.data?.images?.length ? this.data.images[0].url : '';
+    get imageURL(): string {
+        return this.data?.images?.[0]?.url ?? '';
     }
 }
 
@@ -52,8 +61,7 @@ async function redirectToAuthorize() {
     return response;
 }
 
-type RequestAccessTokenParams = { code: string } | { refreshToken: string };
-async function requestAccessToken(params: RequestAccessTokenParams) {
+async function requestAccessToken(params: {code: string} | {refreshToken: string}) {
     if ('code' in params) {
         params['redirectURI'] = REDIRECT_URI;
     }
@@ -88,41 +96,57 @@ async function makeRequest(endpoint: string, method: string = 'GET') {
     return response.json();
 }
 
-async function _search(
-    searchString: string,
-    searchTypes: Array<string> = ['album', 'artist', 'track']
-) {
-    const queryParameters = {
-        q: searchString,
-        type: searchTypes.join(','),
-    }
-    // manually construct the queryString instead of using new URLSearchParams() because
-    // URLSearchParams automatically URL encodes the values in the object, and spotify
-    // expects the type parameter to maintain the commas unencoded
-    const queryString = Object.entries(queryParameters).reduce((result, [key, value]) => {
-        return [...result, `${key.toString()}=${value.toString()}`];
-    }, []).join('&');
-    const response = await makeRequest(`search?${queryString}`);
-    return response;
-}
-
-async function search(
-    searchString: string,
-    searchTypes: Array<string> = ['album', 'artist', 'track']
-) {
-    const rawResult = await _search(searchString, searchTypes);
-    let searchResults = rawResult;
-    if ('albums' in rawResult) {
-        searchResults = {
-            albums: rawResult.albums.items.reduce((result, album) => {
+function filterSearchResults(searchResults, exclude) {
+    let filteredResults = {...searchResults};
+    if ('albums' in filteredResults) {
+        filteredResults = {
+            albums: filteredResults.albums.items.reduce((result, album) => {
                 result[album.id] = album;
                 return result;
             }, {}),
         };
     }
-    return searchResults;
+
+    const recursiveFilter = (searchResults) => {
+        return Object.entries(searchResults).reduce(
+            (result, [key, value]) => {
+                if (exclude.includes(key)) {
+                    return result;
+                } else if (value !== null && typeof value === 'object') {
+                    result[key] = recursiveFilter(value);
+                } else {
+                    result[key] = value;
+                }
+                return result;
+            },
+            {}
+        );
+    };
+
+    if (exclude.length > 0) {
+        filteredResults = recursiveFilter(filteredResults);
+    }
+
+    return filteredResults;
 }
 
+async function search(searchString: string, options: SearchOptions) {
+    // manually construct the queryString instead of using new URLSearchParams() because
+    // URLSearchParams automatically URL encodes the values in the object, and spotify
+    // expects the type parameter to maintain the commas unencoded
+    const queryParameters = {
+        q: searchString,
+        type: Array.from(options.types).join(','),
+        limit: options.count,
+        offset: options.offset,
+    }
+    const queryString = Object.entries(queryParameters).reduce((result, [key, value]) => {
+        return [...result, `${key.toString()}=${value.toString()}`];
+    }, []).join('&');
+
+    const rawResults = await makeRequest(`search?${queryString}`);
+    return filterSearchResults(rawResults, options.exclude);
+}
 
 export {
     Album,
@@ -130,4 +154,5 @@ export {
     requestAccessToken,
     makeRequest,
     search,
+    ITEM_TYPES,
 };
