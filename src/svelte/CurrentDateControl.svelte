@@ -7,11 +7,9 @@
         (e: Event) => currentDate.set(new NuDate(`${(e.target as HTMLInputElement).value}:`));
 </script>
 
-<div>
-    <button on:click={() => currentDate.previousWeek()}>&lt;</button>
-    <input type="date" on:change={setDate} value="{$currentDate.toFormattedString('Py-m-d')}"/>
-    <button on:click={() => currentDate.nextWeek()}>&gt;</button>
-</div>
+<button on:click={() => currentDate.previousWeek()}>&lt;</button>
+<input type="date" on:change={setDate} value="{$currentDate.toFormattedString('Py-m-d')}"/>
+<button on:click={() => currentDate.nextWeek()}>&gt;</button>
 
 <style>
     input[type="date"] {

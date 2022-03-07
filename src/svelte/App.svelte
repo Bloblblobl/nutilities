@@ -55,6 +55,5 @@
         display: flex;
         flex-direction: column;
         height: calc(100% - var(--topbar-height));
-        padding: 1rem;
     }
 </style>

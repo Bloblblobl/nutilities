@@ -65,7 +65,9 @@
             </label>
         </div>
         <div id="aad-date">
-            <CurrentDateControl />
+            <div>
+                <CurrentDateControl />
+            </div>
             <div id="aad-date-picker">
                 {#each datesThisWeek as date}
                     <label>
@@ -109,6 +111,7 @@
     #search-section {
         display: flex;
         flex-direction: column;
+        padding: 1rem;
     }
 
     #search-box {
@@ -172,7 +175,6 @@
     }
 
     #search-results {
-        align-items: center;
         background-color: var(--c-spotify-black);
         display: flex;
         font-size: 1rem;
@@ -180,6 +182,10 @@
         justify-content: center;
         overflow: auto;
         white-space: pre;
+    }
+
+    #search-results > p {
+        align-self: center;
     }
 
     #visual-results {
