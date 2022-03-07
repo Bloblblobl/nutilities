@@ -53,7 +53,7 @@ img {
 }
 
 p {
-    animation-timing-function: linear;
+    transition-timing-function: linear;
     margin-block: 0;
     max-width: 90%;
     overflow: hidden;
