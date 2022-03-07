@@ -1,6 +1,6 @@
 const FIRST_AAD_YEAR = 2016;
 
-type FullNuDateFormat = 'y-m-d' | 'm/d/y';
+type FullNuDateFormat = 'y-m-d' | 'Py-m-d' | 'm/d/y' | 'Pm/d/y';
 type PartialNuDateFormat = 'm d';
 type NuDateFormat = FullNuDateFormat | PartialNuDateFormat;
 
@@ -17,12 +17,20 @@ class NuDate extends Date {
         const dayExp = '(?<day>(3[01])|([12][0-9])|[1-9])';
         const monthExp = '(?<month>(1[0-2])|[1-9])';
         const yearExp = '(?<year>[0-9]{1,4})';
+        const paddedDayExp = '(?<day>(3[01])|([0-2][0-9]))';
+        const paddedMonthExp = '(?<month>(1[0-2])|(0[1-9]))';
         switch(fromFormat) {
             case 'y-m-d':
                 regExpString = `${yearExp}-${monthExp}-${dayExp}`;
                 break;
+            case 'Py-m-d':
+                regExpString = `${yearExp}-${paddedMonthExp}-${paddedDayExp}`;
+                break;
             case 'm/d/y':
                 regExpString = `${monthExp}/${dayExp}/${yearExp}`;
+                break;
+            case 'Pm/d/y':
+                regExpString = `${paddedMonthExp}/${paddedDayExp}/${yearExp}`;
                 break;
             default:
                 return null;
@@ -53,7 +61,7 @@ class NuDate extends Date {
     static parseDateDistance(
         distance: NuDateRelativeDistance
     ): {number: number, unit: string, isNegative: boolean} {
-        const regExpString = '(?<number>-?[0-9]+)(?<unit>)[dmy]';
+        const regExpString = '(?<number>-?[0-9]+)(?<unit>[dwmy])';
         const regExp = new RegExp(regExpString);
         const match = distance.match(regExp);
         if (match === null) {
@@ -101,11 +109,17 @@ class NuDate extends Date {
         const day = this.getDate();
         const month = this.getMonth() + 1;
         const year = this.getFullYear();
+        const paddedDay = day.toString().padStart(2, '0');
+        const paddedMonth = month.toString().padStart(2, '0');
         switch(format) {
             case 'y-m-d':
                 return `${year}-${month}-${day}`;
+            case 'Py-m-d':
+                return `${year}-${paddedMonth}-${paddedDay}`;
             case 'm/d/y':
                 return `${month}/${day}/${year}`;
+            case 'Pm/d/y':
+                return `${paddedMonth}/${paddedDay}/${year}`;
             default:
                 return null;
         }
@@ -127,7 +141,7 @@ class NuDate extends Date {
                 if (isNegative) {
                     newDate.setDate(newDate.getDate() - newDate.getDay());
                 } else {
-                    newDate.setDate(newDate.getDate() + (6 - newDate.getDay()));
+                    newDate.setDate(newDate.getDate() + (7 - newDate.getDay()));
                 }
                 newDate.setDate(newDate.getDate() + (7 * number));
                 break;
@@ -156,71 +170,11 @@ class NuDate extends Date {
         }
         return dateRange;
     }
+
+    getDatesThisWeek(): NuDate[] {
+        const thisWeekRange: NuDateRelativeRange = {start: '-0w', end: '0w'};
+        return this.getRelativeDateRange(thisWeekRange);
+    }
 }
 
-function getDaysInMonth(month: number, year: number) {
-    // returns the number of days in a month based on the year,
-    // where month is 0-indexed. If the month is out of range,
-    // its clamped into range so that you can pass in -1 or 12
-    // as December of last year and January of next year
-    // respectively, which can be useful when calling this on
-    // currentMonth +/- 1
-    month = Math.max(0, Math.min(month, 11));
-    const isLeapYear = year / 4 === 0 && !(year / 100 === 0 && year / 400 !== 0);
-    const daysInFebruary = isLeapYear ? 29 : 28;
-    return [31, daysInFebruary, 31, 30, 31, 30, 31, 30, 30, 31, 30, 31][month];
-}
-
-type SimpleDate = {
-    date: number;
-    month: number;
-    year: number;
-    sortFormat: string;
-    displayFormat: string;
-};
-function getDatesThisWeek(today: Date): SimpleDate[] {
-    const day = today.getDay();
-    const date = today.getDate();
-    const year = today.getFullYear();
-    const month = today.getMonth();
-    const daysThisMonth = getDaysInMonth(month, year);
-    const daysLastMonth = getDaysInMonth(month - 1, year);
-
-    return Array.from({length: 7}, (_, i) => {
-        let newDate = date - day + i;
-        let newMonth = month + 1;
-        let newYear = year;
-        if (newDate < 1) {
-            newDate += daysLastMonth;
-            newMonth = newMonth - 1 < 1 ? 12 : newMonth - 1;
-            newYear = newMonth === 12 ? newYear - 1 : newYear;
-        } else if (newDate > daysThisMonth) {
-            newDate -= daysThisMonth;
-            newMonth = newMonth + 1 > 12 ? 1 : newMonth + 1;
-            newYear = newMonth === 1 ? newYear + 1 : newYear;
-        }
-        return {
-            date: newDate,
-            month: newMonth,
-            year: newYear,
-            // chronological sort order date format to store in db
-            sortFormat: `${newYear}-${newMonth}-${newDate}`,
-            // American date format for display
-            displayFormat: `${newMonth}/${newDate}/${newYear}`,
-        }
-    });
-}
-
-function getDateString(d: Date) {
-    // return YYYY-MM-DD formatted date string from a Date
-    const date = d.getDate().toString().padStart(2, '0');
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    return `${d.getFullYear()}-${month}-${date}`
-}
-
-export {
-    NuDate,
-    getDaysInMonth,
-    getDatesThisWeek,
-    getDateString,
-}
+export {NuDate};
