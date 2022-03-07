@@ -111,6 +111,7 @@ class NuDate extends Date {
         const year = this.getFullYear();
         const paddedDay = day.toString().padStart(2, '0');
         const paddedMonth = month.toString().padStart(2, '0');
+        const monthName = this.toLocaleString('default', { month: 'long' });
         switch(format) {
             case 'y-m-d':
                 return `${year}-${month}-${day}`;
@@ -120,6 +121,8 @@ class NuDate extends Date {
                 return `${month}/${day}/${year}`;
             case 'Pm/d/y':
                 return `${paddedMonth}/${paddedDay}/${year}`;
+            case 'm d':
+                return`${monthName} ${day}`;
             default:
                 return null;
         }

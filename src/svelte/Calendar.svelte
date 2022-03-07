@@ -12,7 +12,7 @@
 {#each dates as date (date.toFormattedString('y-m-d'))}
     <!-- TODO: FIX {@const albumID = $datesToAlbumIDs[date.sortFormat] ?? null}-->
     <div>
-        <p>{date.toFormattedString('m/d/y')}</p>
+        <p>{date.toFormattedString('m d')}</p>
         <AlbumCard albumID={$datesToAlbumIDs[date.toFormattedString('y-m-d')] ?? null}></AlbumCard>
     </div>
 {/each}
