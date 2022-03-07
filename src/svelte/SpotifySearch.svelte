@@ -4,7 +4,6 @@
 
     import { db } from '../ts/clients/db';
     import * as spotify from '../ts/clients/spotify';
-    import { getDatesThisWeek } from '../ts/clients/temporal';
     import { currentDate } from '../ts/stores';
 
     let searchPromise = null;
@@ -13,8 +12,8 @@
     let selectedSearchTypes = 
         JSON.parse(db.local.get('spotify:selected-search-types')) ?? [...searchTypes];
 
-    $: datesThisWeek = getDatesThisWeek($currentDate);
-    let selectedDate = datesThisWeek?.[0].sortFormat;
+    $: datesThisWeek = $currentDate.getDatesThisWeek();
+    let selectedDate = datesThisWeek?.[0].toFormattedString('y-m-d');
 
     const search = () => {
         const spotifySearch: HTMLInputElement = document.querySelector('#spotify-search');
@@ -70,8 +69,8 @@
             <div id="aad-date-picker">
                 {#each datesThisWeek as date}
                     <label>
-                        <input type="radio" value="{date.sortFormat}" bind:group="{selectedDate}"/>
-                        <span>{date.displayFormat}</span>
+                        <input type="radio" value="{date.toFormattedString('y-m-d')}" bind:group="{selectedDate}"/>
+                        <span>{date.toFormattedString('m/d/y')}</span>
                     </label>
                 {/each}
             </div>

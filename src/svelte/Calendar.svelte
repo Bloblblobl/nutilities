@@ -3,19 +3,17 @@
     import AlbumCard from './AlbumCard.svelte';
 
     import { currentDate, datesToAlbumIDs } from '../ts/stores';
-    import { getDatesThisWeek } from '../ts/clients/temporal';
 
-
-    $: dates = getDatesThisWeek($currentDate);
+    $: dates = $currentDate.getDatesThisWeek();
 </script>
 
 <CurrentDateControl />
 <div id="calendar">
-{#each dates as date (date.sortFormat)}
+{#each dates as date (date.toFormattedString('y-m-d'))}
     <!-- TODO: FIX {@const albumID = $datesToAlbumIDs[date.sortFormat] ?? null}-->
     <div>
-        <p>{date.displayFormat}</p>
-        <AlbumCard albumID={$datesToAlbumIDs[date.sortFormat] ?? null}></AlbumCard>
+        <p>{date.toFormattedString('m/d/y')}</p>
+        <AlbumCard albumID={$datesToAlbumIDs[date.toFormattedString('y-m-d')] ?? null}></AlbumCard>
     </div>
 {/each}
 </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { NuDate, getDateString } from '../ts/clients/temporal';
+    import { NuDate } from '../ts/clients/temporal';
     import { currentDate } from '../ts/stores';
 
     // append colon so that the date is created with correct locale settings
@@ -9,7 +9,7 @@
 
 <div>
     <button on:click={() => currentDate.previousWeek()}>&lt;</button>
-    <input type="date" on:change={setDate} value="{getDateString($currentDate)}"/>
+    <input type="date" on:change={setDate} value="{$currentDate.toFormattedString('Py-m-d')}"/>
     <button on:click={() => currentDate.nextWeek()}>&gt;</button>
 </div>
 
