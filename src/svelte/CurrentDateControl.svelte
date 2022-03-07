@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { getDateString } from '../ts/clients/temporal';
+    import { NuDate, getDateString } from '../ts/clients/temporal';
     import { currentDate } from '../ts/stores';
 
     // append colon so that the date is created with correct locale settings
     const setDate =
-        (e: Event) => currentDate.set(new Date(`${(e.target as HTMLInputElement).value}:`));
+        (e: Event) => currentDate.set(new NuDate(`${(e.target as HTMLInputElement).value}:`));
 </script>
 
 <div>

@@ -1,6 +1,7 @@
 import type { DataSnapshot } from 'firebase/database';
 import { writable } from 'svelte/store';
 import { db } from './clients/db';
+import { NuDate } from './clients/temporal';
 
 const createDateStore = (initialValue) => {
     const store = writable(initialValue);
@@ -20,7 +21,7 @@ const createDateStore = (initialValue) => {
 
 export const route = writable('/');
 export const recentlyPlayed = writable({});
-export const currentDate = createDateStore(new Date());
+export const currentDate = createDateStore(new NuDate());
 export const albums = writable({});
 export const datesToAlbumIDs = writable({});
 
