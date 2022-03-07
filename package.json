@@ -39,6 +39,7 @@
     "webpack-dev-server": "^4.1.1"
   },
   "dependencies": {
+    "@floating-ui/dom": "^0.3.1",
     "firebase": "^9.1.0"
   },
   "babel": {
