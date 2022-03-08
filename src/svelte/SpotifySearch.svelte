@@ -3,6 +3,7 @@
     import SpotifySearchBar from './SpotifySearchBar.svelte';
     import { spotifySearchOptions, spotifySearchResults } from '../ts/stores';
 
+    export let onAlbumClick = () => {};
     let visualDisplay = true;
     $: displayingAlbums = $spotifySearchOptions.types.includes('album');
     $: canShow = typeof $spotifySearchResults === 'object' && displayingAlbums;
@@ -19,7 +20,9 @@
         {#if visualDisplay && canShow}
             <div id="visual-results">
                 {#each Object.entries(albumDataMap) as [albumID, albumData] (albumID)}
-                    <AlbumCard albumID={albumID} albumData={albumData}/>
+                    <div on:click={onAlbumClick} data-album-id={albumID}>
+                        <AlbumCard albumID={albumID} albumData={albumData}/>
+                    </div>
                 {/each}
             </div>
         {:else}
@@ -57,6 +60,10 @@
         display: flex;
         flex-flow: wrap;
         justify-content: center;
+    }
+
+    #visual-results > div {
+        cursor: pointer;
     }
 
     #json-results {
