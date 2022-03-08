@@ -35,7 +35,7 @@
 </script>
 
 <main>
-    <div id="calendar">
+    <div id="calendar" class:shrink={selectedDate !== null}>
         <div id="date-control">
             <CurrentDateControl />
         </div>
@@ -48,7 +48,9 @@
             >
                 <p>
                     {date.toFormattedString('m d')}
-                    {#if $datesToAlbumIDs[date.toFormattedString('y-m-d')]}
+                    {#if $datesToAlbumIDs[date.toFormattedString('y-m-d')]
+                         && date.isEqual(selectedDate)
+                    }
                         <span on:click={clearAlbum}>Clear</span>
                     {/if}
                 </p>
@@ -59,17 +61,16 @@
         {/each}
         </div>
     </div>
+    {#if selectedDate !== null}
     <div id="search-container">
         <SpotifySearch onAlbumClick={selectAlbum} />
     </div>
+    {/if}
 </main>
 
 <style>
-    [data-date] > div {
-        border: solid 2px transparent;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
+    main {
+        --calendar-height: 25rem;
     }
 
     span {
@@ -79,6 +80,13 @@
         margin-left: 1rem;
     }
 
+    [data-date] > div {
+        border: solid 2px transparent;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        margin-bottom: 0.5rem;
+    }
+
     .selected > div {
         border: solid 2px var(--c-mint);
     }
@@ -86,21 +94,6 @@
     .selected > p {
         color: var(--c-mint);
         font-weight: bold;
-    }
-
-    main {
-        --calendar-height: 25rem;
-    }
-
-    #calendar {
-        display: flex;
-        flex-direction: column;
-        height: var(--calendar-height);
-    }
-
-    #date-control {
-        align-self: center;
-        margin: 2rem;
     }
 
     #albums {
@@ -122,10 +115,20 @@
         justify-content: space-between;
     }
 
-    #albums > div > p > span {
-        margin-right: 2rem;
+    #calendar {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
+    #calendar.shrink {
+        height: var(--calendar-height);
+    }
+
+    #date-control {
+        align-self: center;
+        margin: 2rem;
+    }
 
     #search-container {
         display: flex;
