@@ -9,24 +9,21 @@
 </script>
 
 <TopBar/>
-<main>
-    <Route path="/">
-        <Grid rows={4} columns={5} />
-    </Route>
-    <Route path="/search">
+<Route path="/">
+    <Grid rows={4} columns={5} />
+</Route>
+<Route path="/search">
+    <main class="search">
         <SpotifySearch />
-    </Route>
-    <Route path="/calendar">
-        <Calendar />
-    </Route>
-</main>
+    </main>
+</Route>
+<Route path="/calendar">
+    <Calendar />
+</Route>
 
 <style>
-    main {
-        background-color: var(--c-dark-gray);
-        box-sizing: border-box;
+    .search {
         display: flex;
         flex-direction: column;
-        height: calc(100% - var(--topbar-height));
     }
 </style>

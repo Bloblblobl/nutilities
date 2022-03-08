@@ -5,6 +5,7 @@
     export let columns: number = 3;
 </script>
 
+<main>
 {#each [...Array(rows).keys()] as i}
     <div>
         {#each [...Array(columns).keys()] as j}
@@ -12,8 +13,14 @@
         {/each}
     </div>
 {/each}
+</main>
 
 <style>
+    main {
+        display: flex;
+        flex-direction: column;
+    }
+
     div {
         box-sizing: border-box;
         width: 100%;

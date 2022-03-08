@@ -14,6 +14,26 @@
     --c-spotify-black: #191414;
 }
 
+* {
+    box-sizing: border-box;
+}
+
+html {
+    color: white;
+    font-family: 'Rubik', cursive;
+}
+
+html, body {
+    background-color: var(--c-dark-gray);
+    height: 100%;
+    margin: 0;
+    width: 100%;
+}
+
+main {
+    height: calc(100% - var(--topbar-height));
+}
+
 button.main-button {
     background-color: transparent;
     border: 3px solid white;
@@ -31,17 +51,6 @@ button.main-button:hover {
     animation: gradient-rotate 3s infinite;
     animation-timing-function: linear;
     transform: scale(1); 
-}
-
-html {
-    color: white;
-    font-family: 'Rubik', cursive;
-}
-
-html, body {
-    height: 100%;
-    margin: 0;
-    width: 100%;
 }
 
 @keyframes gradient-rotate {

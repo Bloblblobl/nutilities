@@ -34,33 +34,35 @@
     }
 </script>
 
-<div id="calendar">
-    <div id="date-control">
-        <CurrentDateControl />
-    </div>
-    <div id="albums">
-    {#each dates as date (date.toFormattedString('y-m-d'))}
-        <!-- TODO: FIX {@const albumID = $datesToAlbumIDs[date.sortFormat] ?? null}-->
-        <div 
-            class:selected={date.isEqual(selectedDate)}
-            data-date="{date.toFormattedString('Py-m-d')}"
-        >
-            <p>
-                {date.toFormattedString('m d')}
-                {#if $datesToAlbumIDs[date.toFormattedString('y-m-d')]}
-                    <span on:click={clearAlbum}>Clear</span>
-                {/if}
-            </p>
-            <div on:click={selectDate}>
-                <AlbumCard albumID={$datesToAlbumIDs[date.toFormattedString('y-m-d')] ?? null} />
-            </div>
+<main>
+    <div id="calendar">
+        <div id="date-control">
+            <CurrentDateControl />
         </div>
-    {/each}
+        <div id="albums">
+        {#each dates as date (date.toFormattedString('y-m-d'))}
+            <!-- TODO: FIX {@const albumID = $datesToAlbumIDs[date.sortFormat] ?? null}-->
+            <div 
+                class:selected={date.isEqual(selectedDate)}
+                data-date="{date.toFormattedString('Py-m-d')}"
+            >
+                <p>
+                    {date.toFormattedString('m d')}
+                    {#if $datesToAlbumIDs[date.toFormattedString('y-m-d')]}
+                        <span on:click={clearAlbum}>Clear</span>
+                    {/if}
+                </p>
+                <div on:click={selectDate}>
+                    <AlbumCard albumID={$datesToAlbumIDs[date.toFormattedString('y-m-d')] ?? null} />
+                </div>
+            </div>
+        {/each}
+        </div>
     </div>
     <div id="search-container">
         <SpotifySearch onAlbumClick={selectAlbum} />
     </div>
-</div>
+</main>
 
 <style>
     [data-date] > div {
@@ -86,9 +88,14 @@
         font-weight: bold;
     }
 
+    main {
+        --calendar-height: 25rem;
+    }
+
     #calendar {
         display: flex;
         flex-direction: column;
+        height: var(--calendar-height);
     }
 
     #date-control {
@@ -100,17 +107,29 @@
         display: grid;
         grid-gap: 1rem;
         grid-template-columns: repeat(auto-fit, minmax(15rem, max-content));
-        height: inherit;
         justify-content: center;
-        max-height: inherit;
         overflow: auto;
     }
 
     #albums > div {
+        display: flex;
         flex-direction: column;
     }
 
+    #albums > div > p {
+        align-items: flex-end;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #albums > div > p > span {
+        margin-right: 2rem;
+    }
+
+
     #search-container {
+        display: flex;
         flex-direction: column;
+        height: calc(100% - var(--calendar-height));
     }
 </style>

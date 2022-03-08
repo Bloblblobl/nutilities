@@ -45,8 +45,8 @@
     #search-results {
         background-color: var(--c-spotify-black);
         display: flex;
+        flex-grow: 1;
         font-size: 1rem;
-        height: 100%;
         overflow: auto;
         white-space: pre;
     }
