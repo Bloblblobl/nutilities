@@ -6,7 +6,7 @@
 </script>
 
 <header>
-    <div class="header-group">
+    <div>
         <img src="{logo512}" alt="Nutilities Logo">
         <h1>Nutilities</h1>
         <Link to="/">
@@ -19,7 +19,7 @@
             <button class="main-button">Calendar</button>
         </Link>
     </div>
-    <div class="header-group">
+    <div>
         <SpotifyLogin/>
     </div>
 </header>
@@ -69,7 +69,7 @@
         width: 100%;
     }
 
-    .header-group {
+    header > div {
         align-items: center;
         display: flex;
     }

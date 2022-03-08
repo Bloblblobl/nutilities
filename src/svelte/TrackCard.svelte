@@ -25,14 +25,14 @@
     }
 </script>
 
-<article>
+<div>
     <img src={track.src} alt="{track.name}">
     <p><a href={track.URL} target="_blank">{track.name}</a></p>
     <p><a href={track.artistURL} target="_blank">{track.artist}</a></p>
-</article>
+</div>
 
 <style>
-    article {
+    div {
         backdrop-filter: blur(1rem);
         background-color: var(--c-spotify-black);
         border-radius: 0.5rem;
@@ -46,11 +46,11 @@
         width: 100%;
     }
 
-    article:not(:last-child) {
+    div:not(:last-child) {
         margin-right: 2rem;
     }
 
-    article:hover {
+    div:hover {
         opacity: 1;
         transition: 0.5s;
     }

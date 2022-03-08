@@ -14,7 +14,7 @@
 
 </script>
 
-<article>
+<div>
     {#if album === null}
         <p>Album not found.</p>
     {:else if album.data === null}
@@ -32,11 +32,11 @@
         <img src="{album.imageURL}" alt="Album cover for {album.name} by {album.artistName}" />
         <p class="title" use:hoverScrollText><span>{album.name}</span></p>
         <p class="artist" use:hoverScrollText><span>{album.artistName}</span></p>
-    {/if}    
-</article>
+    {/if}
+</div>
 
 <style>
-article {
+div {
     align-items: center;
     background-color: var(--c-spotify-black);
     border-radius: 0.5rem;
