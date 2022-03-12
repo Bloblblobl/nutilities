@@ -8,6 +8,7 @@
     import { db } from '../ts/clients/db';
 
     let selectedDate = null;
+    $: populated = Object.keys($datesToAlbumIDs).length > 0;
     $: dates = $currentDate.getDatesThisWeek();
     $: if (!dates.some(date => date.isEqual(selectedDate))) {
         selectedDate = null;
@@ -40,7 +41,7 @@
             <CurrentDateControl />
         </div>
         <div id="albums">
-        {#each dates as date (date.toFormattedString('y-m-d'))}
+        {#each dates as date (`${date.toFormattedString('y-m-d')}-${populated}`)}
             <!-- TODO: FIX {@const albumID = $datesToAlbumIDs[date.sortFormat] ?? null}-->
             <div 
                 class:selected={date.isEqual(selectedDate)}
@@ -72,7 +73,9 @@
 
 <style>
     main {
-        --calendar-height: 25rem;
+        --calendar-height: 20rem;
+        --album-card-size: 12rem;
+        --album-image-size: 7rem;
     }
 
     span {
@@ -90,7 +93,7 @@
     #albums {
         display: grid;
         grid-gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(15rem, max-content));
+        grid-template-columns: repeat(auto-fit, minmax(var(--album-card-size), max-content));
         justify-content: center;
         overflow: auto;
         padding-bottom: 1rem;
@@ -119,7 +122,7 @@
 
     #date-control {
         align-self: center;
-        margin: 1rem;
+        margin: 1rem 0 0;
     }
 
     #search-container {

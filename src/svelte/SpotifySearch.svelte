@@ -43,6 +43,9 @@
     }
 
     #search-results {
+        --album-card-size: 12rem;
+        --album-image-size: 7rem;
+
         background-color: var(--c-spotify-black);
         display: flex;
         flex-grow: 1;

@@ -5,6 +5,7 @@ export function hoverScrollText(node: HTMLElement) {
     const containerWidth = parseFloat(getComputedStyle(node).width);
     const translateAmount = Math.min(containerWidth - textWidth, 0);
     const translateTime = `${Math.abs(translateAmount * timePerPixel)}s`;
+    text.style.transitionTimingFunction = 'linear';
 
 	node.addEventListener('mouseenter', () => {
         text.style.transitionDuration = translateTime;

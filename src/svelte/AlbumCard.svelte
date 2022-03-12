@@ -36,9 +36,9 @@
         {:then}
             <span class="status" on:click={e => setStatus(e, album)}>►</span>
             <img src="{album.imageURL}" alt="Album cover for {album.name} by {album.artistName}" />
-            <p class="title" use:hoverScrollText>
-                <a href="{album.spotifyURI}"><span>{album.name}</span></a>
-            </p>
+            <a href="{album.spotifyURI}">
+                <p class="title" use:hoverScrollText><span>{album.name}</span></p>
+            </a>
             <p class="artist" use:hoverScrollText><span>{album.artistName}</span></p>
         {:catch error}
             <p>Album not found.</p>
@@ -50,6 +50,12 @@
 <style>
     a {
         color: inherit;
+        margin-top: 0.5rem;
+        max-width: 90%;
+    }
+
+    a:hover {
+       box-shadow: var(--c-spotify-light-green) 0 0 3px;
     }
 
     div {
@@ -59,34 +65,34 @@
         cursor: pointer;
         display: flex;
         flex-direction: column;
-        height: 15rem;
+        height: var(--album-card-size);
         justify-content: center;
         margin: 0.2rem;
         position: relative;
-        width: 15rem;
+        width: var(--album-card-size);
     }
 
     img {
-        width: 10rem;
-        height: 10rem;
+        width: var(--album-image-size);
+        height: var(--album-image-size);
     }
 
     p {
         transition-timing-function: linear;
         margin-block: 0;
-        max-width: 90%;
         overflow: hidden;
         position: relative;
         white-space: nowrap;
     }
-
-    /* span {
+    
+    span {
         display: inline-block;
-    } */
+    }
 
     .artist {
         font-size: 0.8rem;
         margin-block: 0.5rem;
+        max-width: 90%;
     }
 
     .listened {
@@ -139,9 +145,5 @@
         text-align: center;
         top: 0;
         width: 2rem;
-    }
-
-    .title {
-        margin-top: 0.5rem;
     }
 </style>
