@@ -36,7 +36,9 @@
         {:then}
             <span class="status" on:click={e => setStatus(e, album)}>►</span>
             <img src="{album.imageURL}" alt="Album cover for {album.name} by {album.artistName}" />
-            <p class="title" use:hoverScrollText><span>{album.name}</span></p>
+            <p class="title" use:hoverScrollText>
+                <a href="{album.spotifyURI}"><span>{album.name}</span></a>
+            </p>
             <p class="artist" use:hoverScrollText><span>{album.artistName}</span></p>
         {:catch error}
             <p>Album not found.</p>
@@ -46,6 +48,10 @@
 </div>
 
 <style>
+    a {
+        color: inherit;
+    }
+
     div {
         align-items: center;
         background-clip: padding-box;
@@ -74,9 +80,9 @@
         white-space: nowrap;
     }
 
-    span {
+    /* span {
         display: inline-block;
-    }
+    } */
 
     .artist {
         font-size: 0.8rem;
