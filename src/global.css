@@ -14,10 +14,6 @@
     --c-spotify-black: #191414;
 }
 
-* {
-    box-sizing: border-box;
-}
-
 html {
     color: white;
     font-family: 'Rubik', cursive;

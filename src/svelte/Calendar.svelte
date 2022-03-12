@@ -54,9 +54,11 @@
                         <span on:click={clearAlbum}>Clear</span>
                     {/if}
                 </p>
-                <div on:click={selectDate}>
-                    <AlbumCard albumID={$datesToAlbumIDs[date.toFormattedString('y-m-d')] ?? null} />
-                </div>
+                <AlbumCard
+                    albumID={$datesToAlbumIDs[date.toFormattedString('y-m-d')] ?? null}
+                    selected={date.isEqual(selectedDate)}
+                    onClick={selectDate}
+                />
             </div>
         {/each}
         </div>
@@ -80,17 +82,6 @@
         margin-left: 1rem;
     }
 
-    [data-date] > div {
-        border: solid 2px transparent;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
-    }
-
-    .selected > div {
-        border: solid 2px var(--c-mint);
-    }
-
     .selected > p {
         color: var(--c-mint);
         font-weight: bold;
@@ -102,6 +93,7 @@
         grid-template-columns: repeat(auto-fit, minmax(15rem, max-content));
         justify-content: center;
         overflow: auto;
+        padding-bottom: 1rem;
     }
 
     #albums > div {
@@ -127,7 +119,7 @@
 
     #date-control {
         align-self: center;
-        margin: 2rem;
+        margin: 1rem;
     }
 
     #search-container {

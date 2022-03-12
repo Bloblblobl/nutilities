@@ -33,6 +33,8 @@ class Album {
     async getData() {
         if (this.data === null) {
             this.data = JSON.parse(await db.realtime.get(this.dbKey));
+        } else {
+            return;
         }
         if (this.data === null) {
             this.data = await makeRequest(`albums/${this.albumID}`);
@@ -52,6 +54,15 @@ class Album {
 
     get imageURL(): string {
         return this.data?.images?.[0]?.url ?? '';
+    }
+
+    get listened(): boolean {
+        return this.data?.listened ?? false;
+    }
+
+    set listened(value: boolean) {
+        this.data.listened = value;
+        db.realtime.set(this.dbKey, JSON.stringify(this.data));
     }
 }
 
