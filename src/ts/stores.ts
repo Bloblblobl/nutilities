@@ -4,16 +4,36 @@ import { db } from './clients/db';
 import * as spotify from './clients/spotify';
 import { NuDate } from './clients/temporal';
 
-const createDateStore = (initialValue) => {
+const createRouteStore = () => {
+    let initialValue = db.local.get('nutilities:route') ?? '/';
     const store = writable(initialValue);
-    const changeDate = (deltaDays) => {
-        store.update(date => {
+    const set = (route: string) => {
+        db.local.set('nutilities:route', route);
+        store.set(route);
+    };
+    return {
+        ...store,
+        set,
+    };
+}
+
+const createDateStore = () => {
+    let initialValue = new NuDate(db.local.get('orchestr8r:date'));
+    const store = writable(initialValue);
+    const set = (date: NuDate) => {
+        db.local.set('orchestr8r:date', `${date.toFormattedString('Py-m-d')}:`);
+        store.set(date);
+    };
+    const changeDate = (deltaDays: number) => {
+        store.update((date: NuDate) => {
             date.setDate(date.getDate() + deltaDays);
-            return date;     
+            db.local.set('orchestr8r:date', `${date.toFormattedString('Py-m-d')}:`);
+            return date;
         });
     };
     return {
         ...store,
+        set,
         changeDate,
         previousWeek: () => changeDate(-7),
         nextWeek: () => changeDate(7),
@@ -52,9 +72,9 @@ setupDateToAlbumIDs();
 
 
 
-export const route = writable('/');
+export const route = createRouteStore();
 export const recentlyPlayed = writable({});
-export const currentDate = createDateStore(new NuDate());
+export const currentDate = createDateStore();
 export const albums = writable({});
 export const datesToAlbumIDs = writable({});
 export const spotifySearchResults = writable(null);
